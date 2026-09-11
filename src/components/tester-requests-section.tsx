@@ -74,6 +74,9 @@ export interface TesterRequestsSectionProps {
   requests: HubSubmittedAppResponse["testerRelations"];
   refetch: () => void;
   totalDay?: number;
+  /** Owner campaign status — when WAITING_FOR_PARTNERS, tester rows show
+   * partner "Ready / Finding testers" badges (spec) instead of raw status. */
+  campaignStatus?: string;
 }
 
 export function TesterRequestsSection({
@@ -81,7 +84,9 @@ export function TesterRequestsSection({
   requests,
   refetch,
   totalDay,
+  campaignStatus,
 }: TesterRequestsSectionProps) {
+  const showReadiness = campaignStatus === "WAITING_FOR_PARTNERS";
   const [selectedRequest, setSelectedRequest] = useState<
     (typeof requests)[0] | null
   >(null);
@@ -433,7 +438,7 @@ export function TesterRequestsSection({
         </TabsList>
 
         <TabsContent value="pending" className="space-y-4">
-          {/* v2 handshake requests targeting this hub ,  same rows that appear on /handshake-testing?tab=requests Incoming */}
+          {/* v2 handshake requests targeting this hub — same rows that appear on /handshake-testing?tab=requests Incoming */}
           {incomingForHub.length > 0 && (
             <div className="space-y-3 rounded-xl border bg-card p-4">
               <p className="text-xs font-bold uppercase tracking-widest text-primary">
@@ -668,7 +673,7 @@ export function TesterRequestsSection({
             )}
             {pendingRequests.length === 0 && incomingForHub.length > 0 && (
               <div className="p-3 text-center text-xs text-muted-foreground">
-                No legacy requests ,  handshake requests above
+                No legacy requests — handshake requests above
               </div>
             )}
           </div>
@@ -817,28 +822,45 @@ export function TesterRequestsSection({
                         </div>
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={
-                            req.status === "COMPLETED"
-                              ? "default"
-                              : req.status === "IN_PROGRESS"
-                                ? "secondary"
-                                : "outline"
-                          }
-                          className={cn(
-                            "font-medium text-xs",
-                            req.status === "COMPLETED" &&
-                            "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200 dark:border-green-500/20",
-                            req.status === "IN_PROGRESS" &&
-                            "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200 dark:border-blue-500/20",
-                            (req.status === "REJECTED" ||
-                              req.status === "DROPPED" ||
-                              req.status === "REMOVED") &&
-                            "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200 dark:border-red-500/20",
-                          )}
-                        >
-                          {req.status}
-                        </Badge>
+                        {showReadiness && req.partnerReadiness ? (
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              "font-medium text-xs",
+                              req.partnerReadiness === "READY" &&
+                              "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 border-emerald-200 dark:border-emerald-500/20",
+                              req.partnerReadiness === "FINDING" &&
+                              "bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 border-amber-200 dark:border-amber-500/20",
+                            )}
+                          >
+                            {req.partnerReadiness === "READY"
+                              ? "Ready"
+                              : "Finding testers"}
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant={
+                              req.status === "COMPLETED"
+                                ? "default"
+                                : req.status === "IN_PROGRESS"
+                                  ? "secondary"
+                                  : "outline"
+                            }
+                            className={cn(
+                              "font-medium text-xs",
+                              req.status === "COMPLETED" &&
+                              "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200 dark:border-green-500/20",
+                              req.status === "IN_PROGRESS" &&
+                              "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200 dark:border-blue-500/20",
+                              (req.status === "REJECTED" ||
+                                req.status === "DROPPED" ||
+                                req.status === "REMOVED") &&
+                              "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200 dark:border-red-500/20",
+                            )}
+                          >
+                            {req.status}
+                          </Badge>
+                        )}
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1 flex-wrap">
@@ -933,22 +955,40 @@ export function TesterRequestsSection({
                         </Tooltip>
                       )}
                     </div>
+                <div className="flex items-center gap-1 flex-wrap justify-end">
+                  {showReadiness && req.partnerReadiness ? (
                     <Badge
                       variant="outline"
                       className={cn(
                         "text-[10px]",
-                        req.status === "COMPLETED" &&
-                        "bg-green-500/10 text-green-600 border-green-200 dark:border-green-500/20",
-                        req.status === "IN_PROGRESS" &&
-                        "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-500/20",
-                        (req.status === "REJECTED" ||
-                          req.status === "DROPPED" ||
-                          req.status === "REMOVED") &&
-                        "bg-red-500/10 text-red-600 border-red-200 dark:border-red-500/20",
+                        req.partnerReadiness === "READY" &&
+                          "bg-emerald-500/15 text-emerald-700 border-emerald-200 dark:border-emerald-500/30 dark:text-emerald-400",
+                        req.partnerReadiness === "FINDING" &&
+                          "bg-amber-500/15 text-amber-700 border-amber-200 dark:border-amber-500/30 dark:text-amber-400",
                       )}
                     >
-                      {req.status}
+                      {req.partnerReadiness === "READY"
+                        ? "Ready"
+                        : "Finding testers"}
                     </Badge>
+                  ) : null}
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-[10px]",
+                      req.status === "COMPLETED" &&
+                        "bg-green-500/10 text-green-600 border-green-200 dark:border-green-500/20",
+                      req.status === "IN_PROGRESS" &&
+                        "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-500/20",
+                      (req.status === "REJECTED" ||
+                        req.status === "DROPPED" ||
+                        req.status === "REMOVED") &&
+                        "bg-red-500/10 text-red-600 border-red-200 dark:border-red-500/20",
+                    )}
+                  >
+                    {req.status}
+                  </Badge>
+                </div>
                   </div>
 
                   <div className="flex items-center justify-center gap-1 flex-wrap">

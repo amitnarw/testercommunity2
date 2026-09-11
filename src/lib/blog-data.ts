@@ -134,9 +134,10 @@ By treating the 14-day rule as a legitimate QA window rather than a bureaucratic
     publishedAt: "2024-05-15",
     author: { name: "Jordan Smith", role: "Community Manager" },
     content: `
+> ⚠️ **Outdated** — Karma Points were removed in 2026. Handshake Testing is now a free barter system. The article below is preserved for historical reference.
 # Optimizing Your Karma Score for Faster Testing
 
-Handshake Testing is built on the principle of mutual support. You test a fellow developer's app and they test yours ,  a true barter system. Understanding how the level and slot system works is the key to getting your 12+ testers quickly.
+Handshake Testing is built on the principle of mutual support. You test a fellow developer's app and they test yours — a true barter system. Understanding how the level and slot system works is the key to getting your 12+ testers quickly.
 
 ## The Karma Economy
 
@@ -325,6 +326,7 @@ This managed approach ensures that by the end of the testing period, you have mo
     publishedAt: "2024-05-25",
     author: { name: "Rachel Green", role: "Support Lead" },
     content: `
+> ⚠️ **Outdated** — Karma Points were removed in 2026. Handshake Testing is now a free barter system. The article below is preserved for historical reference.
 # Financial Management: Wallet, Points, and Security
 
 Your account wallet is the central repository for all your platform assets. This includes your handshake subscription status and your purchased Pro testing slots. Professional management of these assets is vital for long-term project planning.

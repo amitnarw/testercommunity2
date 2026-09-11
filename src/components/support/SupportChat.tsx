@@ -110,7 +110,7 @@ const pathname = usePathname();
         .join("\n");
     }
     if (!text && m.content && typeof m.content === "string") text = m.content;
-    if (text) text = text.replace(/\u2014/g, ", ");
+    if (text) text = text.replace(/—/g, ", ");
     return text;
   };
 

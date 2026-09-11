@@ -26,15 +26,21 @@ export default function HandshakeTestingLayout({
     pathname === "/app/handshake-testing/submit" ||
     pathname === "/app/handshake-testing/submit/form";
 
+  // Spec daily unlock: the redirect keys on `blocked` (daily-aware —
+  // completing today's penalty testing restores access), not on merely
+  // having open tasks (`isPenalized`). Falls back to isPenalized when the
+  // backend predates the `blocked` field.
+  const isBlocked = data?.blocked ?? data?.isPenalized ?? false;
+
   useEffect(() => {
     if (isLoading) return;
-    if (!data?.isPenalized) return;
+    if (!isBlocked) return;
     if (isExempt) return;
     // Force redirect to penalty page (full priority per locked decision)
     router.replace("/app/handshake-testing/penalty");
-  }, [data?.isPenalized, isLoading, pathname, isExempt, router]);
+  }, [isBlocked, isLoading, pathname, isExempt, router]);
 
-  if (!isLoading && data?.isPenalized && !isExempt) {
+  if (!isLoading && isBlocked && !isExempt) {
     return null;
   }
 

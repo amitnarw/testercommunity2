@@ -18,7 +18,7 @@ const steps = [
     number: "02",
     title: "Barter 1:1 Requests",
     description:
-      "Browse other developers' apps and send a handshake request. When they accept, you both agree: you test their app and they test yours ,  a true barter system.",
+      "Browse other developers' apps and send a handshake request. When they accept, you both agree: you test their app and they test yours — a true barter system.",
     icon: CalendarCheck,
   },
   {
@@ -70,7 +70,7 @@ export function HowItWorks() {
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             A simple three-step process. Publish your app, and barter
-            with other developers ,  test each other&apos;s apps and level up.
+            with other developers — test each other&apos;s apps and level up.
           </p>
         </motion.div>
 

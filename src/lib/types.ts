@@ -579,6 +579,13 @@ export interface HubSubmittedAppResponse {
         androidApp: { appName: string; appLogoUrl: string };
       };
     } | null;
+    /**
+     * Most recent COMPLETED HandshakeLink involving the viewer on this
+     * campaign (spec: celebrate when the handshake completes from both
+     * sides). The detail page shows the celebration modal once per link.
+     */
+    completedLinkId?: number | null;
+    completedAt?: string | null;
   } | null;
   appType: AppData["appType"];
   currentTester: number;
@@ -694,6 +701,13 @@ export interface HubSubmittedAppResponse {
     }[];
     /** S12: populated by getHubApps for handshake relations with a live link. */
     handshakePair?: HandshakePairInfo | null;
+    /**
+     * Partner readiness for the owner waiting view (spec: "Ready" = the
+     * partner's own campaign has filled; "Finding testers" = still
+     * assembling). Populated by getSingleHubAppDetails owner enrichment;
+     * null when there is no ACTIVE link.
+     */
+    partnerReadiness?: "READY" | "FINDING" | null;
   }[];
   paymentInfo?: {
     amountPaid: number;
@@ -1564,6 +1578,17 @@ export interface PenaltyTask {
     status: DashboardAndHubStatus;
     androidApp?: { appName: string; appLogoUrl: string; packageName: string };
   };
+  penaltyStartAt?: string | null;
+  penaltyDaysRequired?: number;
+  penaltyProgress?: {
+    required: number;
+    currentDay: number;
+    proofsCount: number;
+    doneDays: number[];
+    todayDone: boolean;
+    /** True when penaltyStartAt + required days is in the past — admin review pending. */
+    windowOver?: boolean;
+  };
 }
 
 export interface MyPenaltiesResponse {
@@ -1571,6 +1596,8 @@ export interface MyPenaltiesResponse {
   completed: number;
   failed: number;
   isPenalized: boolean;
+  /** Daily-aware block state: completing today's penalty testing unlocks access. */
+  blocked: boolean;
 }
 
 export type AddOnCategory =
@@ -1747,6 +1774,8 @@ export interface WaitingCampaign {
     id: number;
     status: TesterStatus;
     tester: { id: string; name: string };
+    partnerReadiness?: "READY" | "FINDING" | null;
+    partnerCampaignId?: number | null;
   }>;
 }
 
@@ -1762,10 +1791,16 @@ export interface PenalizedUser {
     assignedAt: string;
     deadline: string;
     status: PenaltyTaskStatus;
+    taskAppId?: number | null;
+    penaltyStartAt?: string | null;
     sourceCampaign?: {
       id: number;
       androidApp?: { appName: string };
     };
+    taskApp?: {
+      id: number;
+      androidApp?: { appName: string };
+    } | null;
   }>;
 }
 
@@ -1790,6 +1825,11 @@ export interface DeveloperCardData {
   appName: string;
   appLogoUrl: string;
   packageName: string;
+  description: string;
+  category: string;
+  minimumAndroidVersion: number;
+  totalDay: number;
+  averageRating: number;
   appOwnerId: string;
   appOwnerName: string;
   appOwnerImage: string | null;
@@ -1797,8 +1837,6 @@ export interface DeveloperCardData {
   eliteBadge: boolean;
   totalTester: number;
   currentTester: number;
-  totalDay: number;
-  averageRating: number;
   status: DashboardAndHubStatus;
 }
 

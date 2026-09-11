@@ -27,7 +27,7 @@ declare global {
 /**
  * P3.2: guarantee the Razorpay checkout SDK is present. It used to be loaded
  * only on /billing (lazyOnload), so the Buy button failed with
- * "Payment system not ready" whenever a user landed here first ,  which is
+ * "Payment system not ready" whenever a user landed here first — which is
  * ALWAYS the case for penalized users routed to the add-ons-only view.
  */
 function useRazorpayScript() {

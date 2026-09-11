@@ -364,7 +364,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
 
   const currentDay = appDetails?.currentDay || 0;
   const totalDays = appDetails?.totalDay || 16;
-  const requiredTesters = appDetails?.totalTester || 12;
+  const requiredTesters = appDetails?.totalTester || 16;
 
   const isOngoingStatus =
     appDetails?.status === "IN_TESTING" ||
@@ -509,7 +509,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
               onOpenChange={setIsStartTestingModalOpen}
               onSuccess={() => appDetailsRefetch()}
               currentTester={appDetails.currentTester || 0}
-              totalTester={appDetails.totalTester || 12}
+              totalTester={appDetails.totalTester || 16}
             />
           )}
 
@@ -633,7 +633,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
                         Start testing early?
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
+                        You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 16}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
                       </p>
                     </div>
                   </div>
@@ -817,6 +817,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
                     requests={appDetails?.testerRelations || []}
                     refetch={appDetailsRefetch}
                     totalDay={appDetails?.totalDay}
+                    campaignStatus={appDetails?.status}
                   />
                 </TabsContent>
               )}

@@ -15,6 +15,7 @@ import {
   useAdminReplaceTester,
   useAdminForceHandshake,
 } from "@/hooks/useHandshakeMonitoring";
+import { useAssignPenaltyApp } from "@/hooks/usePenalty";
 import { useSubmittedApps } from "@/hooks/useAdmin";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -184,6 +185,12 @@ function WaitingCampaignRow({ campaign }: { campaign: WaitingCampaign }) {
     });
   };
 
+  const testers = campaign.testerRelations ?? [];
+  const unready = testers.filter((t) => t.partnerReadiness === "FINDING");
+  const readyCount = testers.filter(
+    (t) => t.partnerReadiness === "READY",
+  ).length;
+
   return (
     <Card>
       <CardContent className="p-4 space-y-3">
@@ -200,6 +207,11 @@ function WaitingCampaignRow({ campaign }: { campaign: WaitingCampaign }) {
               {campaign.waitingPeriodStartedAt
                 ? new Date(campaign.waitingPeriodStartedAt).toLocaleString()
                 : "?"}
+              {testers.length > 0 && (
+                <>
+                  {" "}· {readyCount}/{testers.length} partners ready
+                </>
+              )}
             </p>
           </div>
           {campaign.escalatedToAdminAt && (
@@ -208,6 +220,38 @@ function WaitingCampaignRow({ campaign }: { campaign: WaitingCampaign }) {
             </Badge>
           )}
         </div>
+
+        {unready.length > 0 && (
+          <div className="space-y-1.5 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+            <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+              {unready.length} partner{unready.length === 1 ? "" : "s"} still
+              finding testers — force-handshake THEIR campaign (it has free
+              capacity):
+            </p>
+            {unready.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center justify-between gap-2 text-xs"
+              >
+                <span className="truncate text-muted-foreground">
+                  {t.tester?.name || t.tester?.id || `Tester #${t.id}`}
+                </span>
+                {t.partnerCampaignId ? (
+                  <a
+                    href={`/admin/submissions-free/${t.partnerCampaignId}`}
+                    className="shrink-0 font-semibold text-primary hover:underline"
+                  >
+                    Open campaign #{t.partnerCampaignId} →
+                  </a>
+                ) : (
+                  <span className="shrink-0 text-muted-foreground">
+                    no linked campaign
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-t border-border/50 pt-3">
           <Select value={partnerAppId} onValueChange={setPartnerAppId}>
@@ -262,24 +306,115 @@ function PenalizedTab() {
   return (
     <div className="space-y-2">
       {items.map((u) => (
-        <Card key={u.id}>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold truncate">{u.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{u.email}</p>
-                <p className="text-xs mt-1">
-                  {u.penaltyTasks.length} active penalty {u.penaltyTasks.length === 1 ? "task" : "tasks"}
-                </p>
-              </div>
-              <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-bold">
-                L{u.handshakeLevel}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+        <PenalizedUserCard key={u.id} user={u} />
       ))}
     </div>
+  );
+}
+
+function PenalizedUserCard({ user: u }: { user: NonNullable<ReturnType<typeof usePenalizedUsers>["data"]>["items"][number] }) {
+  const { toast } = useToast();
+  const [assignTaskId, setAssignTaskId] = useState<number | null>(null);
+  const [assignAppId, setAssignAppId] = useState<string>("");
+  const assignMutation = useAssignPenaltyApp({
+    onSuccess: () => {
+      toast({
+        title: "Penalty app assigned",
+        description: "The user can now start their 16-day penalty testing.",
+      });
+      setAssignTaskId(null);
+      setAssignAppId("");
+    },
+    onError: (err) => {
+      toast({
+        title: "Assign failed",
+        description: err?.message || "Unknown error",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const { data: availableData } = useSubmittedApps("AVAILABLE");
+  const candidates: HubSubmittedAppResponse[] = (availableData || []).filter(
+    (a: HubSubmittedAppResponse) => a.appType === "HANDSHAKE",
+  );
+
+  const unassigned = (u.penaltyTasks ?? []).filter((t) => !t.taskAppId);
+
+  return (
+    <Card>
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold truncate">{u.name}</p>
+            <p className="text-xs text-muted-foreground truncate">{u.email}</p>
+            <p className="text-xs mt-1">
+              {u.penaltyTasks.length} active penalty {u.penaltyTasks.length === 1 ? "task" : "tasks"}
+            </p>
+          </div>
+          <span className="text-xs px-1.5 py-0.5 rounded bg-primary/10 text-primary font-bold">
+            L{u.handshakeLevel}
+          </span>
+        </div>
+
+        <div className="space-y-2">
+          {(u.penaltyTasks ?? []).map((t) => (
+            <div
+              key={t.id}
+              className="flex items-center justify-between gap-2 rounded-lg border border-border/50 px-3 py-2 text-xs"
+            >
+              <span className="truncate text-muted-foreground">
+                #{t.id} · {t.reason} · {t.status}
+                {t.taskApp?.androidApp?.appName
+                  ? ` → ${t.taskApp.androidApp.appName}`
+                  : " → no app assigned"}
+              </span>
+              {!t.taskAppId && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() =>
+                    setAssignTaskId(assignTaskId === t.id ? null : t.id)
+                  }
+                >
+                  {assignTaskId === t.id ? "Cancel" : "Assign app"}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {assignTaskId !== null && unassigned.some((t) => t.id === assignTaskId) && (
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border-t border-border/50 pt-3">
+            <Select value={assignAppId} onValueChange={setAssignAppId}>
+              <SelectTrigger className="sm:w-[320px]">
+                <SelectValue placeholder="Pick a penalty app campaign" />
+              </SelectTrigger>
+              <SelectContent>
+                {candidates.map((c) => (
+                  <SelectItem key={c.id} value={c.id.toString()}>
+                    #{c.id} {c.androidApp?.appName || "Untitled"} ,{" "}
+                    {c.appOwner?.name || c.appOwnerId}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button
+              size="sm"
+              disabled={!assignAppId || assignMutation.isPending}
+              onClick={() =>
+                assignMutation.mutate({
+                  taskId: assignTaskId,
+                  campaignId: Number(assignAppId),
+                })
+              }
+            >
+              Assign
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 

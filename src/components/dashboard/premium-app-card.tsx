@@ -19,7 +19,7 @@ export function PremiumAppCard({ app, type, index }: PremiumAppCardProps) {
   const currentDay = app.currentDay || 0;
   const totalDay = app.totalDay || 14;
   const currentTester = app.currentTester || 0;
-  const totalTester = app.totalTester || 12;
+  const totalTester = app.totalTester || 16;
   const remaining = totalDay - currentDay;
 
   const dayProgress = totalDay > 0 ? Math.min(currentDay / totalDay, 1) : 0;

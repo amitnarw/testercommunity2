@@ -307,7 +307,7 @@ export default function SubmitAppGuidePage() {
                         Setting Up Your Test
                       </h3>
                       <p className="text-muted-foreground text-sm text-left">
-                        Test setup is fixed ,  here is what to know
+                        Test setup is fixed — here is what to know
                       </p>
                     </div>
                   </div>
@@ -317,7 +317,7 @@ export default function SubmitAppGuidePage() {
                     <div className="flex-1 space-y-4 text-muted-foreground">
                       <p>
                         Handshake campaigns use a fixed setup of{" "}
-                        <Highlight>14 tester slots</Highlight> for{" "}
+                        <Highlight>16 tester slots</Highlight> for{" "}
                         <Highlight>16 days</Highlight>. The only setting you choose is the minimum Android version.
                       </p>
                       <div className="space-y-4">

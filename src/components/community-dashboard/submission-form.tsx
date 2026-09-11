@@ -168,14 +168,13 @@ export function SubmissionForm({
     return "";
   };
 
-  const validateCategory = (value: string) => {
-    if (!value) return "Please select a category.";
+  // Spec §5.1: category and minimum Android version are optional for
+  // handshake campaigns (backend defaults to "Other" / 8.0).
+  const validateCategory = (_value: string) => {
     return "";
   };
 
-  const validateMinimumAndroidVersion = (value: number | undefined) => {
-    if (value === undefined || value === null)
-      return "Please select the minimum Android version.";
+  const validateMinimumAndroidVersion = (_value: number | undefined) => {
     return "";
   };
 
@@ -267,7 +266,7 @@ export function SubmissionForm({
       instruction_for_tester: instructionForTester,
       minimum_android_version: minimumAndroidVersion,
       appType: "HANDSHAKE",
-      total_tester: 14,
+      total_tester: 16,
       total_days: 16,
     });
   };
@@ -485,7 +484,10 @@ export function SubmissionForm({
                         htmlFor="category_id"
                         className="text-sm font-semibold text-foreground"
                       >
-                        App Category <span className="text-destructive">*</span>
+                        App Category{" "}
+                        <span className="text-muted-foreground font-normal">
+                          (optional, defaults to Other)
+                        </span>
                       </Label>
                       <div className="relative group/input">
                         <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center z-10">
@@ -668,7 +670,9 @@ export function SubmissionForm({
                         className="text-sm font-semibold text-foreground"
                       >
                         Min. Android Version{" "}
-                        <span className="text-destructive">*</span>
+                        <span className="text-muted-foreground font-normal">
+                          (optional, defaults to 8.0)
+                        </span>
                       </Label>
                       <Select
                         value={minimumAndroidVersion?.toString() || ""}
@@ -709,7 +713,7 @@ export function SubmissionForm({
                     <div className="rounded-xl border border-border/60 bg-secondary/30 p-4 text-sm text-muted-foreground leading-relaxed">
                       Handshake campaigns run at a fixed setup of{" "}
                       <span className="font-semibold text-foreground">
-                        14 tester slots
+                        16 tester slots
                       </span>{" "}
                       for{" "}
                       <span className="font-semibold text-foreground">

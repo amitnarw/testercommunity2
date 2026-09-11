@@ -1,7 +1,9 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getMyPenalties,
   submitPenaltyProof,
+  submitPenaltyDailyProof,
+  assignPenaltyApp,
   verifyPenaltyTask,
   listAllPenalties,
 } from "@/lib/apiCalls";
@@ -25,6 +27,34 @@ export function useSubmitPenaltyProof(
   return useMutation<unknown, Error, { taskId: number; proofImageUrl: string }>({
     mutationFn: ({ taskId, proofImageUrl }) =>
       submitPenaltyProof(taskId, proofImageUrl),
+    ...options,
+  });
+}
+
+export function useSubmitPenaltyDailyProof(
+  options?: Parameters<typeof useMutation<unknown, Error, { taskId: number; proofImageUrl: string }>>[0],
+) {
+  const queryClient = useQueryClient();
+  return useMutation<unknown, Error, { taskId: number; proofImageUrl: string }>({
+    mutationFn: ({ taskId, proofImageUrl }) =>
+      submitPenaltyDailyProof(taskId, proofImageUrl),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-penalties"] });
+    },
+    ...options,
+  });
+}
+
+export function useAssignPenaltyApp(
+  options?: Parameters<typeof useMutation<unknown, Error, { taskId: number; campaignId: number }>>[0],
+) {
+  const queryClient = useQueryClient();
+  return useMutation<unknown, Error, { taskId: number; campaignId: number }>({
+    mutationFn: ({ taskId, campaignId }) => assignPenaltyApp(taskId, campaignId),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["all-penalties"] });
+      queryClient.invalidateQueries({ queryKey: ["my-penalties"] });
+    },
     ...options,
   });
 }

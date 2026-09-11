@@ -126,7 +126,7 @@ export default function HowItWorksPage() {
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
             Barter testing with other developers for free. Publish your app,
-            send requests, and test each other's apps ,  a reciprocal
+            send requests, and test each other's apps — a reciprocal
             handshake system that ensures quality.
           </p>
         </div>

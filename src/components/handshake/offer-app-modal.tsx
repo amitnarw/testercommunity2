@@ -19,9 +19,9 @@ interface OfferAppModalProps {
   /** Target campaign (dashboard_and_hub) id the user wants to test. */
   hubId: string;
   hubAppName?: string;
-  /** Owner of the target campaign ,  required by the v2 handshake request API. */
+  /** Owner of the target campaign — required by the v2 handshake request API. */
   hubOwnerId?: string;
-  /** Owner display name ,  used in the mutual-match celebration copy. */
+  /** Owner display name — used in the mutual-match celebration copy. */
   hubOwnerName?: string;
   onSuccess: () => void;
 }
@@ -61,8 +61,12 @@ export function OfferAppModal({
   const sendMutation = useSendHandshakeRequest({
     onSuccess: (response) => {
       onOpenChange(false);
-      onSuccess();
-      if (response?.mutualMatch) {
+      // Mutual match: skip the parent's generic success modal — the
+      // celebration already delivers the success moment with much more
+      // punch. Sending-only: show the standard success modal.
+      if (!response?.mutualMatch) {
+        onSuccess();
+      } else {
         setShowCelebration(true);
       }
     },

@@ -1,6 +1,7 @@
 "use client";
 
 import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle, Star } from "lucide-react";
+import Link from "next/link";
 import { PageHeader } from "@/components/page-header";
 import { ROUTES } from "@/lib/routes";
 import { useToast } from "@/hooks/use-toast";
@@ -179,6 +180,13 @@ export default function OngoingProjectView({
   const userRelation = appDetails?.testerRelations?.[0];
   const userDaysCompleted = userRelation?.daysCompleted || 0;
 
+  // R5c: a penalized tester (relation flipped to PENALIZED by the spec
+  // gating) cannot submit normal campaign proofs — the daily landing here
+  // should explain the pause and point at the penalty page. The spec daily
+  // unlock grants access to pages, but the relation status itself blocks
+  // submissions at the backend (status-gate in submitDailyVerification).
+  const isUserPenalized = userRelation?.status === "PENALIZED";
+
   const lastActivity = userRelation?.lastActivityAt
     ? new Date(userRelation.lastActivityAt)
     : null;
@@ -190,11 +198,11 @@ export default function OngoingProjectView({
     lastActivity.getFullYear() === today.getFullYear();
 
   const hasTestedToday = !!(
-    isSameDay || userDaysCompleted >= (appDetails?.totalDay || 14)
+    isSameDay || userDaysCompleted >= (appDetails?.totalDay || 16)
   );
 
   // Last day detection: user is on the final day of testing
-  const totalDays = appDetails?.totalDay || 14;
+  const totalDays = appDetails?.totalDay || 16;
   const isLastDay = userDaysCompleted === totalDays - 1 && !hasTestedToday;
 
   // Testing completed: user has completed all days including verification on the last day
@@ -213,7 +221,7 @@ export default function OngoingProjectView({
 
   const displayDay = hasTestedToday
     ? Math.max(1, userDaysCompleted)
-    : Math.min(userDaysCompleted + 1, appDetails?.totalDay || 14);
+    : Math.min(userDaysCompleted + 1, appDetails?.totalDay || 16);
 
   const screenshots =
     appDetails?.feedback
@@ -344,7 +352,31 @@ export default function OngoingProjectView({
                   )}
                 </div>
 
-                {!isTestingNotStarted &&
+                {isUserPenalized && (
+                  <section className="rounded-2xl border border-amber-500/40 bg-amber-500/5 p-4 sm:p-5 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="text-sm">
+                      <p className="font-semibold text-amber-700 dark:text-amber-400">
+                        Campaign testing paused — serving a penalty
+                      </p>
+                      <p className="text-muted-foreground mt-1">
+                        You have an open penalty task. Campaign check-ins are
+                        blocked while the penalty is being served. Open the
+                        penalty page to complete today&apos;s check-in on your
+                        assigned app.
+                      </p>
+                      <Link
+                        href="/app/handshake-testing/penalty"
+                        className="mt-2 inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold hover:underline"
+                      >
+                        Go to penalty page →
+                      </Link>
+                    </div>
+                  </section>
+                )}
+
+                {!isUserPenalized &&
+                  !isTestingNotStarted &&
                   !hasTestedToday &&
                   !isAdminCompleted &&
                   appDetails?.appType !== "PAID" && (
@@ -353,7 +385,7 @@ export default function OngoingProjectView({
                         appId={hubId}
                         packageName={appDetails?.androidApp?.packageName || ""}
                         currentDay={displayDay}
-                        totalDays={appDetails?.totalDay || 14}
+                        totalDays={appDetails?.totalDay || 16}
                         hasTestedToday={hasTestedToday}
                         onCheckIn={refetch}
                       />

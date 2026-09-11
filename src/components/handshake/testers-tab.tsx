@@ -91,7 +91,7 @@ export function TestersTab({ testers, isLoading, title }: TestersTabProps) {
                     <div className="flex items-center gap-2 flex-wrap">
                       <p className="font-medium truncate">{t.tester.name}</p>
                       <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-600">
-                        L{t.tester.handshakeLevel ?? 1}
+                        L{t.tester.handshakeLevel ?? 0}
                       </span>
                       {t.tester.eliteBadge && <EliteBadge size="xs" />}
                     </div>

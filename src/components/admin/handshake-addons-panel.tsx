@@ -23,7 +23,7 @@ export default function HandshakeAddonsPanel() {
   const { data, isLoading, refetch } = useProfessionalAssignments();
   const { toast } = useToast();
 
-  // P4/M8: this page used to be read-only ,  the assign / fill / cancel
+  // P4/M8: this page used to be read-only — the assign / fill / cancel
   // actions existed in the API and hooks but had no controls here.
   const cancelMutation = useCancelProfessionalTester({
     onSuccess: () => {
@@ -164,7 +164,7 @@ export default function HandshakeAddonsPanel() {
         </Card>
       </section>
 
-      {/* Keep unused hook import honest ,  direct assignment without purchase */}
+      {/* Keep unused hook import honest — direct assignment without purchase */}
       <DirectAssignSection />
     </div>
   );

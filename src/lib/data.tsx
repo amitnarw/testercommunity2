@@ -231,7 +231,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Profile Setup",
         description:
-          "Tell us about your device ,  model, Android version, RAM, screen size, and network ,  so we can match you with apps.",
+          "Tell us about your device — model, Android version, RAM, screen size, and network — so we can match you with apps.",
       },
       {
         title: "Request to Join",
@@ -289,12 +289,12 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Live Campaign Dashboard",
         description:
-          "See how many testers have joined, their daily check-in progress, and when testing completes ,  all in real time.",
+          "See how many testers have joined, their daily check-in progress, and when testing completes — all in real time.",
       },
       {
         title: "Structured Feedback",
         description:
-          "Receive categorized feedback: bugs (with LOW/MEDIUM/HIGH/CRITICAL priority), suggestions, and praise ,  each with optional screenshots or videos.",
+          "Receive categorized feedback: bugs (with LOW/MEDIUM/HIGH/CRITICAL priority), suggestions, and praise — each with optional screenshots or videos.",
       },
       {
         title: "Daily Screenshot Proof",
@@ -328,7 +328,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Campaign Summary",
         description:
-          "View your campaign results at a glance ,  total testers, completed days, bug count, suggestions, and praise.",
+          "View your campaign results at a glance — total testers, completed days, bug count, suggestions, and praise.",
       },
       {
         title: "Ship with Confidence",
@@ -344,13 +344,13 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 1,
     title: "Purchase a Package",
     description:
-      "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle ,  no handshake partner required. Pay securely via Razorpay with regional pricing available.",
+      "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle — no handshake partner required. Pay securely via Razorpay with regional pricing available.",
     badgeText: "Time: 2 Mins â€¢ Cost: Varies by Plan",
     details: [
       {
         title: "Database-Driven Plans",
         description:
-          "Choose from active plans stored in our system ,  each with a set price, regional currency support, and package count (testing cycles).",
+          "Choose from active plans stored in our system — each with a set price, regional currency support, and package count (testing cycles).",
       },
       {
         title: "Instant Access",
@@ -365,7 +365,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Use Anytime",
         description:
-          "Your purchased packages stay in your wallet. Submit apps whenever you're ready ,  one package deducted per submission.",
+          "Your purchased packages stay in your wallet. Submit apps whenever you're ready — one package deducted per submission.",
       },
     ],
   },
@@ -373,7 +373,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit Your App",
     description:
-      "Provide your Play Store link, app name, logo, category, and optional tester instructions. Choose to save as draft or submit ,  one package is deducted on submission and the app enters admin review.",
+      "Provide your Play Store link, app name, logo, category, and optional tester instructions. Choose to save as draft or submit — one package is deducted on submission and the app enters admin review.",
     badgeText: "Requirement: 1 Package per App",
     details: [
       {
@@ -384,7 +384,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Draft or Submit",
         description:
-          "Save your progress as a draft with no package cost, or submit for testing ,  one package is deducted and your app enters admin review.",
+          "Save your progress as a draft with no package cost, or submit for testing — one package is deducted and your app enters admin review.",
       },
       {
         title: "Step-by-Step Guide",
@@ -413,12 +413,12 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Structured Bug Reports",
         description:
-          "Receive categorized feedback with severity levels: bugs (CRITICAL/HIGH/MEDIUM/LOW), suggestions, and praise ,  each with optional media attachments.",
+          "Receive categorized feedback with severity levels: bugs (CRITICAL/HIGH/MEDIUM/LOW), suggestions, and praise — each with optional media attachments.",
       },
       {
         title: "Device & OS Coverage",
         description:
-          "See exactly which Android device models, OS versions, screen sizes, RAM configurations, and languages were tested ,  with visual coverage charts.",
+          "See exactly which Android device models, OS versions, screen sizes, RAM configurations, and languages were tested — with visual coverage charts.",
       },
       {
         title: "Complete Transparency",
@@ -442,7 +442,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Verified Daily Proof",
         description:
-          "Every day of every tester is backed by screenshot verification ,  no automated or fake testing. Your compliance is fully documented.",
+          "Every day of every tester is backed by screenshot verification — no automated or fake testing. Your compliance is fully documented.",
       },
       {
         title: "Satisfaction Guarantee",

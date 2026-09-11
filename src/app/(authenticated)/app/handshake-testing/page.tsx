@@ -141,7 +141,7 @@ function CommunityDashboardContent() {
   const testersEngaged = hubData?.testersEngaged || 0;
   const testsCompleted = hubData?.testsCompleted || 0;
 
-  // S5a-2: real discovery data ,  other users' AVAILABLE handshake apps
+  // S5a-2: real discovery data — other users' AVAILABLE handshake apps
   const { data: availableApps, isPending: availableIsPending } = useHubApps({
     type: selectedTab === "available" ? "AVAILABLE" : "",
   });
@@ -199,7 +199,7 @@ function CommunityDashboardContent() {
                   Handshake Level
                 </CardTitle>
                 <p className="text-3xl sm:text-5xl font-bold my-auto relative z-10">
-                  {handshakeStats?.handshakeLevel ?? 1}
+                  {handshakeStats?.handshakeLevel ?? 0}
                 </p>
                 <p className="flex flex-row gap-2 text-xs text-white/80 relative z-10">
                   <span className="bg-card/20 rounded-xl py-0.5 px-2">
