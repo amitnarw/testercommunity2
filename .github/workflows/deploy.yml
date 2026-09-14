@@ -46,17 +46,24 @@ jobs:
           test -f next.config.ts || (echo "next.config.ts missing" && exit 1)
 
       # 6️⃣ Setup SSH
+      # R7-deploy: ssh-keyscan was opening 4 parallel unauthenticated probe
+      # connections (RSA/ECDSA/ED25519 /etc.) that the server was rate-limiting
+      # or fail2ban-banning, causing "Connection closed by remote host" before
+      # rsync could ever start. We let rsync's own SSH client do trust-on-first-
+      # use (`StrictHostKeyChecking=accept-new`) — single connection, same
+      # security, and stays consistent with the backend deploy workflow which
+      # works through appleboy/ssh-action without keyscan.
       - name: 🔑 Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       # 7️⃣ Sync build to server
       - name: 📤 Sync build to server (rsync)
         run: |
           rsync -avz --delete \
+            -e "ssh -o StrictHostKeyChecking=accept-new" \
             .next \
             public \
             package.json \
