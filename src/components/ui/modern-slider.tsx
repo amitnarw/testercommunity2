@@ -110,17 +110,23 @@ export function ModernSlider({
       >
         {/* Track background */}
         <div className="absolute left-0 right-0 h-2 rounded-full bg-secondary/50">
-          {/* Markers */}
+          {/* Markers — fixed 40 ticks positioned by percentage so max=5000
+              doesn't render 5001 DOM nodes per drag frame. */}
           <div className="absolute inset-0 flex justify-between px-1">
-            {[...Array(max - min + 1)].map((_, i) => (
-              <div
-                key={i}
-                className={cn(
-                  "w-1 h-1 rounded-full transition-colors duration-200",
-                  i <= value - min ? accent.markerFill : accent.markerEmpty,
-                )}
-              />
-            ))}
+            {Array.from({ length: 40 }).map((_, i) => {
+              const tickValue =
+                min + ((max - min) * i) / 39;
+              const filled = tickValue <= value;
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    "w-1 h-1 rounded-full transition-colors duration-200",
+                    filled ? accent.markerFill : accent.markerEmpty,
+                  )}
+                />
+              );
+            })}
           </div>
         </div>
 

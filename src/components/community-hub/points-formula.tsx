@@ -22,13 +22,15 @@ import {
 import {
   getLevelFromCompleted,
   getAvailableSlots,
+  getNextLevelThreshold,
+  LEVEL_THRESHOLDS,
   MAX_HANDSHAKE_LEVEL,
 } from "@/lib/handshake";
 
-const levelNodes = Array.from({ length: MAX_HANDSHAKE_LEVEL }, (_, i) => ({
-  level: i + 1,
-  slots: getAvailableSlots(i + 1),
-  testsNeeded: i * 2,
+const levelNodes = LEVEL_THRESHOLDS.map((t) => ({
+  level: t.level,
+  slots: getAvailableSlots(t.level),
+  testsNeeded: t.tests,
 }));
 
 export function PointsFormula() {
@@ -36,13 +38,11 @@ export function PointsFormula() {
 
   const currentLevel = getLevelFromCompleted(completedCount);
   const currentSlots = getAvailableSlots(currentLevel);
-  const nextLevelThreshold = currentLevel * 2;
-  const testsToNext = Math.max(0, nextLevelThreshold - completedCount);
-  const prevThreshold = (currentLevel - 1) * 2;
-  const progressToNext =
-    currentLevel < MAX_HANDSHAKE_LEVEL
-      ? Math.min(100, ((completedCount - prevThreshold) / 2) * 100)
-      : 100;
+  const nextLevelThreshold = getNextLevelThreshold(currentLevel);
+  const testsToNext =
+    nextLevelThreshold !== null
+      ? Math.max(0, nextLevelThreshold - completedCount)
+      : 0;
 
   return (
     <section
@@ -74,8 +74,9 @@ export function PointsFormula() {
             </span>
           </h2>
           <p className="mt-4 text-muted-foreground text-base md:text-lg max-w-xl mx-auto">
-            Slide to see how many handshakes unlock more testers. Every 2
-            completed handshakes = +1 level = +1 slot. Max 20 slots at Level 9.
+            Slide to see how many handshakes unlock more testers. Complete
+            handshake tests to climb from Level 0 to Level 9 — each level
+            adds 1 slot. Max 20 slots at Level 9.
           </p>
         </motion.div>
 
@@ -100,7 +101,7 @@ export function PointsFormula() {
                   value={completedCount}
                   onChange={setCompletedCount}
                   min={0}
-                  max={(MAX_HANDSHAKE_LEVEL - 1) * 2}
+                  max={5000}
                   label="Completed Handshakes"
                   accentColor="emerald"
                 />
@@ -219,22 +220,25 @@ export function PointsFormula() {
                     </AccordionTrigger>
                     <AccordionContent className="p-4 pt-0 text-sm text-muted-foreground space-y-2">
                       <p>
-                        <strong>Level 1 (Start):</strong> 0 completed handshakes
+                        <strong>Level 0 (Start):</strong> 0 completed handshakes
                         → 12 tester slots.
                       </p>
                       <p>
-                        <strong>Level up:</strong> Every 2 completed handshakes
-                        raises your level by 1, unlocking 1 additional tester
-                        slot.
+                        <strong>Level up:</strong> complete handshake tests to
+                        climb the ladder — Level 1 at 10, Level 2 at 25, Level 3
+                        at 50, Level 4 at 100, Level 5 at 250, Level 6 at 500,
+                        Level 7 at 1000, Level 8 at 2500. Each level unlocks 1
+                        additional tester slot.
                       </p>
                       <p>
-                        <strong>Level 9 (Max):</strong> 16 completed handshakes
-                        unlock the maximum of 20 slots ,  enough to meet Google
-                        Play testing requirements with a buffer.
+                        <strong>Level 9 (Max):</strong> 5000 completed
+                        handshakes unlock the maximum of 20 slots — enough to
+                        meet Google Play testing requirements with a buffer.
                       </p>
                       <p className="italic mt-2">
                         A handshake counts as &quot;completed&quot; only when both
-                        sides finish the full 14-day testing cycle.
+                        sides finish the full 16-day testing cycle without
+                        missing a day.
                       </p>
                     </AccordionContent>
                   </AccordionItem>
@@ -259,9 +263,10 @@ export function PointsFormula() {
               <div>
                 <h3 className="font-bold text-sm mb-1">How You Level Up</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Each time both you and your partner complete a 14-day handshake
-                  test, it counts as 1 completed handshake. After 2 completed
-                  handshakes, you gain 1 level and 1 extra slot.
+                  Each time both you and your partner complete a 16-day handshake
+                  test without missing a day, it counts as 1 completed
+                  handshake. Reach the level thresholds (10, 25, 50, 100…) to
+                  gain levels and extra slots.
                 </p>
               </div>
             </div>
@@ -275,9 +280,9 @@ export function PointsFormula() {
               <div>
                 <h3 className="font-bold text-sm mb-1">Max Capacity</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  At Level 1, you can request up to 12 testers per app. At Level
-                  9 (16 completed handshakes), you unlock the maximum of 20
-                  testers ,  enough to meet Google Play requirements with a
+                  At Level 0, you start with 12 tester slots per app. At Level
+                  9 (5000 completed handshakes), you unlock the maximum of 20
+                  slots — enough to meet Google Play requirements with a
                   buffer.
                 </p>
               </div>

@@ -32,7 +32,7 @@ function DashboardContent() {
 
         <ImmediateAttentionSection items={summary.immediateAttentionItems} />
 
-        <QuickActions />
+        {/* <QuickActions /> */}
 
         <ActionRequiredSection actionItems={summary.actionItems} />
 

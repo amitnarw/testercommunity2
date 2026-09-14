@@ -1,5 +1,5 @@
 /**
- * Centralized route constants ,  single source of truth for all route paths.
+ * Centralized route constants — single source of truth for all route paths.
  * Import from here instead of hardcoding route strings.
  */
 export const ROUTES = {

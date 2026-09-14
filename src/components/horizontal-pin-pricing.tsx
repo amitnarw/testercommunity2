@@ -45,10 +45,11 @@ export function HorizontalPinPricing({
     return allPlans
       .filter((p) => p.isActive)
       .filter((p) => (showAllPlans ? true : p.id !== "handshake"))
+      .filter((p) => (mode === "billing" ? p.billingType === "ONE_TIME" : true))
       .length;
-  }, [allPlans, showAllPlans]);
+  }, [allPlans, showAllPlans, mode]);
 
-  const enableHorizontal = cardCount >= 2;
+  const enableHorizontal = mode !== "billing" && cardCount >= 2;
 
   useLayoutEffect(() => {
     if (!enableHorizontal) return;

@@ -36,7 +36,7 @@ function resolvePlanCta(
   pathname: string,
   isLoggedIn: boolean,
 ): Cta {
-  // Enterprise (CUSTOM) ,  always uses admin-configured href if set
+  // Enterprise (CUSTOM) — always uses admin-configured href if set
   if (
     plan.billingType === "CUSTOM" &&
     plan.ctaHref &&
@@ -45,7 +45,7 @@ function resolvePlanCta(
     return { kind: "link", href: plan.ctaHref };
   }
 
-  // REDIRECT plans ,  admin href if set
+  // REDIRECT plans — admin href if set
   if (
     plan.buttonAction === "REDIRECT" &&
     plan.ctaHref &&
@@ -57,7 +57,7 @@ function resolvePlanCta(
   const isPaid =
     plan.billingType === "ONE_TIME" || plan.billingType === "SUBSCRIPTION";
 
-  // /billing ,  Razorpay for paid, link for free
+  // /billing — Razorpay for paid, link for free
   if (pathname === "/billing") {
     if (isPaid) return { kind: "razorpay", planId: plan.id };
     return {
@@ -68,7 +68,7 @@ function resolvePlanCta(
     };
   }
 
-  // Other pages ,  link only, no Razorpay
+  // Other pages — link only, no Razorpay
   if (isPaid) {
     return {
       kind: "link",
@@ -111,13 +111,17 @@ export function PricingCardsGrid({
     return [...arr]
       .filter((p) => p.isActive)
       .filter((p) => (showAllPlans ? true : p.id !== "handshake"))
+      .filter((p) => (mode === "billing" ? p.billingType === "ONE_TIME" : true))
       .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
-  }, [allPlans, showAllPlans]);
+  }, [allPlans, showAllPlans, mode]);
 
   if (sortedPlans.length === 0) return null;
 
   const style = VARIANT_STYLES[variant] ?? VARIANT_STYLES.pricing;
-  const maxW = responsiveMaxW(sortedPlans.length, style.maxW);
+  const maxW =
+    mode === "billing" && sortedPlans.length === 1
+      ? "max-w-sm"
+      : responsiveMaxW(sortedPlans.length, style.maxW);
 
   return (
     <div

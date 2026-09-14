@@ -236,7 +236,7 @@ export function CommunityStats({
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             {isPro
               ? "Trusted by developers worldwide for reliable, professional app testing with guaranteed results."
-              : "A growing pool of developers bartering app testing ,  building quality apps together through mutual handshake testing."}
+              : "A growing pool of developers bartering app testing — building quality apps together through mutual handshake testing."}
           </p>
         </motion.div>
 

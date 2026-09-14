@@ -83,7 +83,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   const igstAmount = invoice.igst_amount || 0;
   const totalAmount = subtotal + cgstAmount + sgstAmount + igstAmount;
 
-  const invoiceDate = invoice.createdAt ? format(new Date(invoice.createdAt), "dd MMM yyyy") : "\u2014";
+  const invoiceDate = invoice.createdAt ? format(new Date(invoice.createdAt), "dd MMM yyyy") : "—";
 
   return (
     <div className="bg-white text-slate-800 print-card relative overflow-hidden print:overflow-visible print:page-break-inside-avoid print:flex print:flex-col print:min-h-[297mm]" style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" }}>
@@ -185,7 +185,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400 font-medium">Place of Supply</span>
-                  <span className="text-slate-700">{invoice.place_of_supply || "\u2014"}</span>
+                  <span className="text-slate-700">{invoice.place_of_supply || "—"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-slate-400 font-medium">Currency</span>
@@ -370,7 +370,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                         {formatCurrency(refund.amount, payment.currency)}
                       </td>
                       <td className="py-1.5 text-slate-500">
-                        {refund.reason || "\u2014"}
+                        {refund.reason || "—"}
                       </td>
                       <td className="py-1.5 font-mono text-[10px] text-slate-400">
                         {refund.razorpayRefundId}

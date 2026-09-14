@@ -6,11 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useMyPenalties, useSubmitPenaltyProof } from "@/hooks/usePenalty";
+import { useMyPenalties, useSubmitPenaltyProof, useSubmitPenaltyDailyProof } from "@/hooks/usePenalty";
 import { uploadFileDirectlyToR2 } from "@/lib/apiCalls";
 import { SafeImage } from "@/components/safe-image";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
+import type { PenaltyTask } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 function formatDeadline(deadline: string): string {
   const ms = new Date(deadline).getTime() - Date.now();
@@ -23,7 +25,7 @@ function formatDeadline(deadline: string): string {
 
 /**
  * P5: countdown text uses Date.now(), which differs between the SSR
- * prerender and the client ,  gate it behind a mounted flag to avoid a
+ * prerender and the client — gate it behind a mounted flag to avoid a
  * hydration mismatch warning.
  */
 function DeadlineBadge({ deadline }: { deadline: string }) {
@@ -37,6 +39,183 @@ function DeadlineBadge({ deadline }: { deadline: string }) {
   );
 }
 
+/**
+ * Assigned-app penalty task card (spec: admin assigns an app, user tests it
+ * 16 days with daily check-ins). Shows the app, day progress grid, and
+ * today's check-in. Submitting today's proof restores access for today.
+ */
+function PenaltyAppTaskCard({
+  task,
+  proofUrl,
+  onProofFile,
+  submitting,
+  onSubmitting,
+}: {
+  task: PenaltyTask;
+  proofUrl?: string;
+  onProofFile: (taskId: number, file: File) => void;
+  submitting: boolean;
+  onSubmitting: (id: number | null) => void;
+}) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const dailySubmit = useSubmitPenaltyDailyProof();
+  const progress = task.penaltyProgress;
+  const required = progress?.required ?? 16;
+  const proofsCount = progress?.proofsCount ?? 0;
+  const doneDays = new Set(progress?.doneDays ?? []);
+  const todayDone = progress?.todayDone ?? false;
+  const currentDay = progress?.currentDay ?? 1;
+  // Backend exposes the unclamped day + a windowOver flag (true once
+  // penaltyStartAt + required days is in the past) so the user sees a
+  // "Window over — waiting on admin review" card instead of a permanently
+  // clickable check-in that 409s.
+  const windowOver = progress?.windowOver ?? false;
+
+  const handleSubmitToday = async () => {
+    if (!proofUrl) {
+      toast({
+        title: "Upload required",
+        description: "Please upload today's screenshot first.",
+        variant: "destructive",
+      });
+      return;
+    }
+    onSubmitting(task.id);
+    try {
+      await dailySubmit.mutateAsync({ taskId: task.id, proofImageUrl: proofUrl });
+      toast({
+        title: "Today's testing submitted",
+        description: "Platform access restored for today. Keep it up!",
+      });
+      queryClient.invalidateQueries({ queryKey: ["my-penalties"] });
+    } catch (err) {
+      toast({
+        title: "Submission failed",
+        description: err instanceof Error ? err.message : "Unknown error",
+        variant: "destructive",
+      });
+    } finally {
+      onSubmitting(null);
+    }
+  };
+
+  return (
+    <Card className="border-orange-500/30">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-start gap-3">
+          {task.taskApp?.androidApp ? (
+            <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+              <SafeImage
+                src={task.taskApp.androidApp.appLogoUrl}
+                alt={task.taskApp.androidApp.appName}
+                fill
+                className="object-cover"
+              />
+            </div>
+          ) : null}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-semibold truncate">
+                {task.taskApp?.androidApp?.appName || "Penalty app"}
+              </p>
+              <Badge
+                variant="outline"
+                className={
+                  windowOver
+                    ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 border-amber-500/30"
+                    : "bg-orange-500/15 text-orange-600 border-orange-500/30"
+                }
+              >
+                {windowOver
+                  ? `Penalty app · Window over`
+                  : `Penalty app · Day ${currentDay}/${required}`}
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-0.5">{task.reason}</p>
+            <DeadlineBadge deadline={task.deadline} />
+          </div>
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between text-xs mb-1.5">
+            <span className="text-muted-foreground">
+              {proofsCount}/{required} days tested
+            </span>
+            {todayDone && (
+              <span className="font-semibold text-emerald-600">
+                Today done ✓ access restored today
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-1 flex-wrap">
+            {Array.from({ length: required }, (_, i) => {
+              const dayNum = i + 1;
+              const done = doneDays.has(dayNum);
+              const isToday = dayNum === currentDay && !done;
+              return (
+                <div
+                  key={dayNum}
+                  title={`Day ${dayNum}${done ? ": done" : isToday ? ": today" : ""}`}
+                  className={cn(
+                    "h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold",
+                    done && "bg-emerald-500/20 text-emerald-600",
+                    isToday && "bg-amber-500/20 text-amber-600 ring-2 ring-amber-500/40",
+                    !done && !isToday && "bg-muted text-muted-foreground",
+                  )}
+                >
+                  {done ? <CheckCircle2 className="h-3.5 w-3.5" /> : dayNum}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {!todayDone && !windowOver && (
+          <div className="border-t border-border/40 pt-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+              Today&apos;s check-in (Day {currentDay})
+            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <input
+                id={`file-${task.id}`}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) onProofFile(task.id, f);
+                }}
+              />
+              <label
+                htmlFor={`file-${task.id}`}
+                className="cursor-pointer inline-flex items-center gap-1.5 px-3 h-9 rounded-lg border border-border/60 bg-secondary/40 hover:bg-secondary/60 text-sm"
+              >
+                <Upload className="w-4 h-4" />
+                {proofUrl ? "Replace image" : "Choose image"}
+              </label>
+              {proofUrl && (
+                <Button size="sm" onClick={handleSubmitToday} disabled={submitting}>
+                  {submitting ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    "Submit today's proof"
+                  )}
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+        {windowOver && (
+          <p className="text-xs font-semibold text-amber-600 dark:text-amber-400 border-t border-border/40 pt-3">
+            Window over — waiting on admin review to resolve the task.
+          </p>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function PenaltyPage() {
   const { data, isLoading } = useMyPenalties();
   const queryClient = useQueryClient();
@@ -46,7 +225,7 @@ export default function PenaltyPage() {
   const [proofUrlByTask, setProofUrlByTask] = useState<Record<number, string>>({});
 
   const handleProofFile = async (taskId: number, file: File) => {
-    // P3.1: dedicated multipart upload call ,  the old inline fetch used a
+    // P3.1: dedicated multipart upload call — the old inline fetch used a
     // relative URL that never reached the backend and could not decrypt the
     // JWE response envelope, so proof upload failed every time.
     try {
@@ -133,8 +312,8 @@ export default function PenaltyPage() {
                   active penalty {activeTasks.length === 1 ? "task" : "tasks"}.
                 </p>
                 <p className="text-muted-foreground mt-1">
-                  You cannot publish or join new handshake tests until all
-                  penalty tasks are completed and verified by an admin.
+                  Complete today&apos;s penalty testing below to restore access
+                  for today. Finish all penalty days to clear the penalty.
                 </p>
               </div>
             </div>
@@ -159,7 +338,17 @@ export default function PenaltyPage() {
           <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             Active penalty tasks ({activeTasks.length})
           </h2>
-          {activeTasks.map((task) => (
+          {activeTasks.map((task) =>
+            task.taskApp ? (
+              <PenaltyAppTaskCard
+                key={task.id}
+                task={task}
+                proofUrl={proofUrlByTask[task.id]}
+                onProofFile={handleProofFile}
+                submitting={submittingId === task.id}
+                onSubmitting={setSubmittingId}
+              />
+            ) : (
             <Card key={task.id}>
               <CardContent className="p-4 space-y-3">
                 <div className="flex items-start gap-3">
@@ -226,7 +415,8 @@ export default function PenaltyPage() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ),
+          )}
         </div>
       )}
 

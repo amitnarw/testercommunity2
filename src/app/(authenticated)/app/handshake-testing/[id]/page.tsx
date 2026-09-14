@@ -39,6 +39,7 @@ import {
 import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { OfferAppModal } from "@/components/handshake/offer-app-modal";
+import { HandshakeCelebrationModal } from "@/components/handshake/handshake-celebration-modal";
 import { AddonsSection } from "@/components/handshake/addons-section";
 import { PendingHandshakeCard, RequestSentCard, ActiveHandshakeCard, OwnCampaignCard, FullHandshakeCard } from "@/components/handshake/pending-handshake-card";
 import { authClient } from "@/lib/auth-client";
@@ -64,6 +65,8 @@ function AppTestingPageClient({ id }: { id: string }) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showOfferModal, setShowOfferModal] = useState(false);
   const [fireConfetti, setFireConfetti] = useState(false);
+  const [showCompletionCelebration, setShowCompletionCelebration] =
+    useState(false);
 
   const { data: appDetails, isPending: appDetailsIsPending } =
     useSingleHubAppDetails({ id });
@@ -100,7 +103,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   const isFull =
     !!appDetails?.totalTester &&
     (appDetails?.currentTester ?? 0) >= appDetails.totalTester;
-  // Full is lower priority than owner / pending / active-handshake ,  those must
+  // Full is lower priority than owner / pending / active-handshake — those must
   // keep winning when they apply.
   const hideCta = hideCtaForPending || activeHandshake || isOwner || isFull;
 
@@ -111,6 +114,33 @@ function AppTestingPageClient({ id }: { id: string }) {
       setTimeout(() => setFireConfetti(true), 300);
     }
   }, [isSuccess]);
+
+  // Spec: animated celebration when the handshake COMPLETES from both sides.
+  // Backend exposes the most recent COMPLETED link as
+  // handshake.completedLinkId; celebrate once per link (localStorage flag).
+  useEffect(() => {
+    const completedLinkId = appDetails?.handshake?.completedLinkId;
+    if (!completedLinkId || typeof window === "undefined") return;
+    const key = `handshake-celebrated-${completedLinkId}`;
+    try {
+      if (window.localStorage.getItem(key)) return;
+      // Write the flag on first open (not on close) so navigation-dismissed
+      // modals don't re-show on the next visit. Storage errors fall through
+      // (modal still shows once).
+      try {
+        window.localStorage.setItem(key, "1");
+      } catch {
+        // ignore
+      }
+      setShowCompletionCelebration(true);
+    } catch {
+      setShowCompletionCelebration(true);
+    }
+  }, [appDetails?.handshake]);
+
+  const handleCompletionCelebrationClose = (open: boolean) => {
+    setShowCompletionCelebration(open);
+  };
 
   useEffect(() => {
     if (isError) {
@@ -136,7 +166,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   const handleErrorRetry = () => {
     setShowErrorModal(false);
     if (isFull) return;
-    // P5: retry through the same appType-aware path as handleSubmit ,  for
+    // P5: retry through the same appType-aware path as handleSubmit — for
     // HANDSHAKE campaigns this re-opens the offer modal instead of firing
     // the legacy join mutation that never applies to them.
     if (appDetails?.appType === "HANDSHAKE") {
@@ -353,8 +383,8 @@ function AppTestingPageClient({ id }: { id: string }) {
                     className="shrink-0 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-red-600 text-sm font-medium hover:bg-red-500/20 transition-colors"
                   >
                     {appDetails.handshake.penaltyCount > 0
-                      ? `${appDetails.handshake.penaltyCount} penalty ${appDetails.handshake.penaltyCount === 1 ? "task" : "tasks"} ,  resolve`
-                      : "Penalty required ,  view details"}
+                      ? `${appDetails.handshake.penaltyCount} penalty ${appDetails.handshake.penaltyCount === 1 ? "task" : "tasks"} — resolve`
+                      : "Penalty required — view details"}
                   </Link>
                 ) : (
                   <div className="shrink-0 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-emerald-600 text-sm font-medium">
@@ -829,6 +859,14 @@ function AppTestingPageClient({ id }: { id: string }) {
           setShowSuccessModal(true);
           setTimeout(() => setFireConfetti(true), 300);
         }}
+      />
+
+      <HandshakeCelebrationModal
+        open={showCompletionCelebration}
+        onOpenChange={handleCompletionCelebrationClose}
+        variant="completed"
+        partnerAppName={appDetails?.androidApp?.appName}
+        partnerName={appDetails?.appOwner?.name}
       />
     </div>
   );

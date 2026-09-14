@@ -96,7 +96,7 @@ export function useDashboardSummary() {
       if (remaining <= 3 && remaining > 0) {
         items.push({
           label: `"${a.androidApp?.appName || "Untitled"}" expires in ${remaining} day${remaining !== 1 ? "s" : ""}`,
-          description: `${a.currentTester || 0}/${a.totalTester || 12} testers`,
+          description: `${a.currentTester || 0}/${a.totalTester || 16} testers`,
           href: a.appType === "PAID" ? ROUTES.AUTHENTICATED.PRO_TESTING : ROUTES.AUTHENTICATED.HANDSHAKE_TESTING,
           severity: remaining <= 1 ? "high" : "medium",
         });

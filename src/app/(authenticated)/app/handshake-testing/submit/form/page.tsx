@@ -262,7 +262,7 @@ export default function SubmitAppFormPage() {
                     <div className="group/stat flex flex-col items-center text-center p-2 sm:p-3 rounded-xl bg-gradient-to-br from-secondary/60 to-secondary/30 border border-border/30 transition-all duration-300 hover:border-emerald-500/20 hover:shadow-md cursor-default">
                       <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-400 mb-1 sm:mb-1.5 transition-transform duration-300 group-hover/stat:scale-110" />
                       <span className="text-[10px] sm:text-xs font-bold">
-                        14
+                        16
                       </span>
                       <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                         Testers

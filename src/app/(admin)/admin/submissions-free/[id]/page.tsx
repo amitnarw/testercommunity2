@@ -338,7 +338,7 @@ className={
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {/* F-8: the edit endpoint hard-rejects FREE campaigns ,  hide
+                {/* F-8: the edit endpoint hard-rejects FREE campaigns — hide
                     the button instead of letting every save fail with 400. */}
                 {project.appType !== "FREE" && (
                   <Button

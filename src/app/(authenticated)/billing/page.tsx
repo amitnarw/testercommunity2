@@ -424,10 +424,8 @@ export default function BillingPage() {
               </div>
 
               {pricingIsPending ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-                  {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-[520px] w-full rounded-3xl bg-muted" />
-                  ))}
+                <div className="grid grid-cols-1 max-w-sm mx-auto gap-4 items-stretch">
+                  <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
                 </div>
               ) : (
                 <HorizontalPinPricing

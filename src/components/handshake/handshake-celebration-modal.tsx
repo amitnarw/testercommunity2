@@ -12,6 +12,11 @@ interface HandshakeCelebrationModalProps {
   partnerAppName?: string;
   partnerName?: string;
   onContinue?: () => void;
+  /**
+   * "matched" (default): mutual request match at send time.
+   * "completed": both sides finished the full testing cycle (spec).
+   */
+  variant?: "matched" | "completed";
 }
 
 export function HandshakeCelebrationModal({
@@ -20,6 +25,7 @@ export function HandshakeCelebrationModal({
   partnerAppName,
   partnerName,
   onContinue,
+  variant = "matched",
 }: HandshakeCelebrationModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -137,9 +143,19 @@ export function HandshakeCelebrationModal({
             transition={{ delay: 0.6 }}
             className="text-sm text-muted-foreground mt-2 max-w-xs"
           >
-            Your request was matched mutually. You and{" "}
-            {partnerName ? <strong>{partnerName}</strong> : "your partner"} will
-            now test each other&apos;s apps.
+            {variant === "completed" ? (
+              <>
+                You and {partnerName ? <strong>{partnerName}</strong> : "your partner"}{" "}
+                both finished the full testing cycle. Level credit earned —
+                well done!
+              </>
+            ) : (
+              <>
+                Your request was matched mutually. You and{" "}
+                {partnerName ? <strong>{partnerName}</strong> : "your partner"} will
+                now test each other&apos;s apps.
+              </>
+            )}
           </motion.p>
 
           {partnerAppName && (

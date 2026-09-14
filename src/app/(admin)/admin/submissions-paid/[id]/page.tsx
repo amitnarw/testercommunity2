@@ -1010,7 +1010,6 @@ export default function AdminSubmissionDetailPage({
                 testerRelations={project.testerRelations}
                 appId={project.id}
                 totalDays={project.totalDay || 14}
-                currentDay={currentDay}
                 onRefetch={() => refetch()}
                 appType="PAID"
               />

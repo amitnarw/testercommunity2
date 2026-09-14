@@ -1101,7 +1101,7 @@ export async function createHandshakeSubscription() {
 }
 
 // ============================================================
-// Handshake Testing v2 ,  Spec Â§3-49
+// Handshake Testing v2 — Spec §3-49
 // ============================================================
 
 import type {
@@ -1329,13 +1329,28 @@ export async function getEliteBadgeActivity(
 
 // =============== Penalty ===============
 
+// R5b: Penalty wrappers rethrow AxiosError with the backend's real message
+// (response.data.message) so the UI toast shows it instead of the
+// generic Axios boilerplate. Mirrors the pattern at line 1158 but is a
+// sync `never` (no await needed; no console.error side effect since the
+// catch already logged before we rethrew).
+function rethrowPenaltyAxiosError(error: unknown, fallback?: string): never {
+  const e = error as {
+    response?: { data?: { message?: string } };
+    message?: string;
+  };
+  throw new Error(
+    e?.response?.data?.message || e?.message || fallback || "Unknown error",
+  );
+}
+
 export async function getMyPenalties(): Promise<MyPenaltiesResponse> {
   try {
     const response = await api.get(`${API_ROUTES.PENALTY}/me`);
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching my penalties:", error);
-    throw error;
+    rethrowPenaltyAxiosError(error);
   }
 }
 
@@ -1351,7 +1366,36 @@ export async function submitPenaltyProof(
     return response?.data?.data;
   } catch (error) {
     console.error("Error submitting penalty proof:", error);
-    throw error;
+    rethrowPenaltyAxiosError(error);
+  }
+}
+
+export async function submitPenaltyDailyProof(
+  taskId: number,
+  proofImageUrl: string,
+) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.PENALTY}/${taskId}/daily-proof`,
+      { proofImageUrl },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error submitting penalty daily proof:", error);
+    rethrowPenaltyAxiosError(error);
+  }
+}
+
+export async function assignPenaltyApp(taskId: number, campaignId: number) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.PENALTY}/${taskId}/assign-app`,
+      { campaignId },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error assigning penalty app:", error);
+    rethrowPenaltyAxiosError(error);
   }
 }
 
@@ -1368,7 +1412,7 @@ export async function verifyPenaltyTask(
     return response?.data?.data;
   } catch (error) {
     console.error("Error verifying penalty task:", error);
-    throw error;
+    rethrowPenaltyAxiosError(error);
   }
 }
 
@@ -1993,7 +2037,7 @@ export async function uploadFileToR2(
 
 /**
  * P3.1: server-side multipart upload to R2 (POST /api/r2/upload).
- * Uses raw fetch (NOT the shared axios instance ,  its request interceptor
+ * Uses raw fetch (NOT the shared axios instance — its request interceptor
  * would encrypt the FormData and its response interceptor is what normally
  * decrypts `data`), so the JWE response envelope is decrypted here via
  * decryptData. Returns { url, key }.

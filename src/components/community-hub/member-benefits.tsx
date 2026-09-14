@@ -16,7 +16,7 @@ const benefits = [
   {
     icon: Zap,
     title: "1:1 Barter Testing",
-    description: "You test my app, I test yours ,  fair for both sides",
+    description: "You test my app, I test yours — fair for both sides",
     color: "text-yellow-500",
     bg: "bg-yellow-500/10",
   },
@@ -99,7 +99,7 @@ export function MemberBenefits() {
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             Join hundreds of developers on the most rewarding handshake
-            testing platform ,  free for everyone, powered by barter.
+            testing platform — free for everyone, powered by barter.
           </p>
         </motion.div>
 
@@ -157,7 +157,7 @@ export function MemberBenefits() {
               </h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
                 Publish your app for free and start sending handshake
-                requests to other developers ,  no subscription needed.
+                requests to other developers — no subscription needed.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

@@ -159,7 +159,7 @@ export default function HistoryPage() {
                   <span>Handshake Level</span>
                 </div>
                 <p className="text-2xl font-bold text-emerald-600 dark:text-white">
-                  {handshakeStats?.handshakeLevel ?? 1}
+                  {handshakeStats?.handshakeLevel ?? 0}
                 </p>
               </div>
             </div>
