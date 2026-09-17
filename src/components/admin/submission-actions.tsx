@@ -29,7 +29,10 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
     ? `/admin/submissions-paid/${submission.id}` 
     : `/admin/submissions-free/${submission.id}`;
 
-  if (submission.status !== "IN_REVIEW") {
+  if (
+    submission.status !== "IN_REVIEW" &&
+    submission.status !== "UNDER_ADMIN_REVIEW"
+  ) {
     return (
       <div className="flex items-center gap-2 justify-end">
         <Link href={submissionPath}>
@@ -97,7 +100,10 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
           minimumAndroidVersion: submission.minimumAndroidVersion,
           rewardMoney: submission.rewardMoney,
         }}
-        isReview={submission.status === "IN_REVIEW"}
+        isReview={
+          submission.status === "IN_REVIEW" ||
+          submission.status === "UNDER_ADMIN_REVIEW"
+        }
       />
     </div>
   );

@@ -35,6 +35,8 @@ function StatusBadge({ status }: { status: string }) {
         return "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400 border-red-500/30";
       case "IN_REVIEW":
         return "bg-amber-500/20 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border-amber-500/30";
+      case "UNDER_ADMIN_REVIEW":
+        return "bg-rose-500/20 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border-rose-500/30";
       case "DRAFT":
         return "bg-gray-500/20 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 border-gray-500/30";
       case "ON_HOLD":
@@ -165,7 +167,7 @@ export function SubmissionsTable({
                       {submission.promoCode.code}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">, </span>
+                    <span className="text-muted-foreground">—</span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">

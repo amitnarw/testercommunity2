@@ -221,6 +221,9 @@ function AdminSubmissionsFreeContent() {
                   Running (
                   {(countsData?.AVAILABLE || 0) + (countsData?.IN_TESTING || 0)})
                 </TabsTrigger>
+                <TabsTrigger value="UNDER_ADMIN_REVIEW">
+                  Escalated ({countsData?.UNDER_ADMIN_REVIEW || 0})
+                </TabsTrigger>
                 <TabsTrigger value="REJECTED">
                   Rejected ({countsData?.REJECTED || 0})
                 </TabsTrigger>
