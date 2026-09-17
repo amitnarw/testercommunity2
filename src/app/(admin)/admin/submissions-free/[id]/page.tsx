@@ -293,12 +293,13 @@ export default function AdminSubmissionDetailPage({
                             ? "destructive"
                             : "secondary"
                         }
-className={
+                        className={
                             project.status === "ACCEPTED" ||
                             project.status === "AVAILABLE" ||
                             project.status === "IN_TESTING" ||
                             project.status === "TESTING_ACTIVE" ||
-                            project.status === "COMPLETED"
+                            project.status === "COMPLETED" ||
+                            project.status === "UNDER_ADMIN_REVIEW"
                               ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
                               : "font-bold"
                           }
@@ -310,7 +311,8 @@ className={
                         project.status === "AVAILABLE" ||
                         project.status === "IN_TESTING" ||
                         project.status === "TESTING_ACTIVE" ||
-                        project.status === "COMPLETED") && (
+                        project.status === "COMPLETED" ||
+                        project.status === "UNDER_ADMIN_REVIEW") && (
                         <p className="text-sm text-muted-foreground max-w-xl leading-snug">
                           {project.status === "ACCEPTED" &&
                             "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
@@ -321,6 +323,8 @@ className={
                             "Active testing phase. Testers are participating and feedback is being collected."}
                           {project.status === "COMPLETED" &&
                             "Testing completed. All required testers have participated and duration fulfilled."}
+                          {project.status === "UNDER_ADMIN_REVIEW" &&
+                            "Recruiting window expired (24h, not enough testers joined). Re-approve to restart the recruiting window, or reject/remove."}
                         </p>
                       )}
                   </div>
@@ -351,7 +355,8 @@ className={
                 )}
 
                 {(project.status === "IN_REVIEW" ||
-                  project.status === "REJECTED") && (
+                  project.status === "REJECTED" ||
+                  project.status === "UNDER_ADMIN_REVIEW") && (
                   <>
                     <Button
                       variant="destructive"
@@ -367,7 +372,10 @@ className={
                       onClick={() => setShowAcceptDialog(true)}
                       className="px-5 py-2.5 h-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md font-bold"
                     >
-                      <Check className="w-4 h-4 mr-1.5" /> Approve
+                      <Check className="w-4 h-4 mr-1.5" />{" "}
+                      {project.status === "UNDER_ADMIN_REVIEW"
+                        ? "Re-approve"
+                        : "Approve"}
                     </Button>
 
                     {project.status === "REJECTED" && (
