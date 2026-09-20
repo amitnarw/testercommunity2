@@ -20,7 +20,7 @@ interface AdminCompleteDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-  appType?: "FREE" | "PAID" | "HANDSHAKE";
+  appType?: "PAID" | "HANDSHAKE";
   unfinishedCount?: number;
   requiredDays?: number;
 }

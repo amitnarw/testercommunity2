@@ -9,7 +9,7 @@ import type { HubSubmittedAppResponse } from "@/lib/types";
 
 interface PremiumAppCardProps {
   app: HubSubmittedAppResponse;
-  type: "PAID" | "FREE";
+  type: "PAID" | "HANDSHAKE";
   index: number;
 }
 

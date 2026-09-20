@@ -1124,6 +1124,7 @@ import type {
   EliteBadgeActivityEntry,
   PaginatedEliteBadgeResponse,
   HandshakeMonitoringOverview,
+  StartRequestCampaign,
   WaitingCampaign,
   PenalizedUser,
   MissedDayRecord,
@@ -1654,6 +1655,55 @@ export async function adminForceHandshake(payload: {
   }
 }
 
+export async function getStartRequests(): Promise<{
+  items: StartRequestCampaign[];
+}> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/start-requests`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching start requests:", error);
+    return { items: [] };
+  }
+}
+
+export async function approveStartRequest(payload: { campaignId: number }) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/approve-start-request`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error approving start request:", error);
+    throw error;
+  }
+}
+
+export async function rejectStartRequest(payload: {
+  campaignId: number;
+  remark: string;
+}) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/reject-start-request`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error rejecting start request:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    }
+    throw error;
+  }
+}
+
 export async function acceptHubAppTestingRequest(payload: {
   hub_id: string;
   tester_id: string;
@@ -1839,6 +1889,33 @@ export async function startHubAppTesting(payload: { appId: number | string }) {
     return response?.data?.data;
   } catch (error) {
     console.error("Error starting hub app testing:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function requestStartTestingHubApp(payload: {
+  appId: number | string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/request-start-testing`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error requesting hub app start testing:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;
@@ -2177,6 +2254,7 @@ export async function doSessionLogoutAll() {
 export async function submitDailyVerification(payload: {
   hubId: number | string;
   proofImage: string;
+  remark?: string;
   metaData?: any;
 }) {
   try {

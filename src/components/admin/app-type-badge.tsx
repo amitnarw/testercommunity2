@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { DollarSign, Users2 } from "lucide-react";
 
 interface AppTypeBadgeProps {
-  appType: "PAID" | "FREE" | string;
+  appType: "PAID" | "HANDSHAKE" | string;
   size?: "sm" | "md" | "lg";
   showIcon?: boolean;
   className?: string;
@@ -101,7 +101,7 @@ export function StatusBadge({ status, size = "md", className }: StatusBadgeProps
 }
 
 interface ServiceTypeCardProps {
-  type: "PAID" | "FREE";
+  type: "PAID" | "HANDSHAKE";
   title: string;
   description: string;
   count: number;
@@ -110,7 +110,7 @@ interface ServiceTypeCardProps {
 }
 
 /**
- * A card component for filtering by service type (PAID/FREE) in admin pages.
+ * A card component for filtering by service type (PAID/HANDSHAKE) in admin pages.
  */
 export function ServiceTypeCard({ 
   type, 

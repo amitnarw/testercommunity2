@@ -2411,3 +2411,15 @@ export async function deletePaidSubmission(id: number) {
     throw error;
   }
 }
+
+export async function deleteHandshakeSubmission(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/submission-handshake/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}

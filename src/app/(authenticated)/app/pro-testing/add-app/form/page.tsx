@@ -697,7 +697,7 @@ function AddAppFormContent() {
                   </div>
 
                   {draftId && (
-                    <div className="pt-4 border-t border-border/40 flex justify-end">
+                    <div className="hidden pt-4 border-t border-border/40 flex justify-end">
                       <Button
                         variant="destructive"
                         size="sm"
@@ -834,7 +834,7 @@ function AddAppFormContent() {
                     variant="outline"
                     onClick={handleSaveDraft}
                     disabled={isSavingDraft}
-                    className="h-10 sm:h-12 px-3 sm:px-4 rounded-xl border-border/60 shrink-0 hover:bg-secondary/50 hover:border-border transition-all duration-300"
+                    className="hidden h-10 sm:h-12 px-3 sm:px-4 rounded-xl border-border/60 shrink-0 hover:bg-secondary/50 hover:border-border transition-all duration-300"
                   >
                     <Save
                       className={cn(

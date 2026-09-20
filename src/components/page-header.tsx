@@ -24,7 +24,7 @@ export function PageHeader({
     <div
       data-loc="PageHeader"
       className={cn(
-        "flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 md:py-1 px-2",
+        "flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 md:py-2 px-2",
         className,
       )}
     >

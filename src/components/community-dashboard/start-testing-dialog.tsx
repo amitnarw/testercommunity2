@@ -1,6 +1,6 @@
 "use client";
 
-import { useStartHubAppTesting } from "@/hooks/useHub";
+import { useRequestStartTesting } from "@/hooks/useHub";
 import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
@@ -11,7 +11,16 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Loader2, PlayCircle, AlertTriangle } from "lucide-react";
+import {
+  Loader2,
+  PlayCircle,
+  AlertTriangle,
+  Handshake,
+  Sparkles,
+} from "lucide-react";
+
+/** Minimum joined testers before a start request can be sent (L1 slot cap). */
+export const START_REQUEST_MIN_TESTERS = 12;
 
 interface StartTestingDialogProps {
   appId: number | string;
@@ -31,66 +40,90 @@ export function StartTestingDialog({
   totalTester,
 }: StartTestingDialogProps) {
   const { toast } = useToast();
-  const { mutate: startTesting, isPending: isStarting } =
-    useStartHubAppTesting({
-      onSuccess: () => {
-        toast({
-          title: "Testing Started",
-          description: "Your app testing phase has started successfully.",
-        });
-        onOpenChange(false);
-        onSuccess?.();
-      },
-      onError: (err: any) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: err?.message || "Failed to start testing.",
-        });
-      },
-    });
+  const { mutate: sendRequest, isPending: isSending } = useRequestStartTesting({
+    onSuccess: () => {
+      toast({
+        title: "Request Sent",
+        description:
+          "Your request to start testing has been sent to admin for approval.",
+      });
+      onOpenChange(false);
+      onSuccess?.();
+    },
+    onError: (err: Error) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err?.message || "Failed to send start request.",
+      });
+    },
+  });
 
-  const handleStartTesting = () => {
-    startTesting({ appId });
+  const handleSendRequest = () => {
+    sendRequest({ appId });
   };
 
-  const showWarning = currentTester < totalTester;
+  const testersJoined = currentTester || 0;
+  const hasEnoughTesters = testersJoined >= START_REQUEST_MIN_TESTERS;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:w-[480px] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
+      <DialogContent className="w-[95vw] sm:w-[520px] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
         <div className="bg-emerald-500/5 p-6 border-b border-emerald-500/10">
           <DialogHeader>
             <DialogTitle className="text-emerald-600 flex items-center gap-2 text-xl font-bold">
               <PlayCircle className="w-6 h-6" />
-              Start Testing Phase
+              Request to Start Testing
             </DialogTitle>
             <DialogDescription className="text-muted-foreground">
-              Begin the active testing period for your application.
+              This request will go to admin for approval. Testing starts only
+              after admin approves.
             </DialogDescription>
           </DialogHeader>
         </div>
 
         <div className="p-6 space-y-4">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            By starting the testing phase, the application will be marked as "IN
-            TESTING". Testers joined to this project will be able to see the
-            instructions and begin testing.
-          </p>
+          <ul className="space-y-2.5 text-sm text-foreground/80 leading-relaxed">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-emerald-500 shrink-0" />
+              <span>
+                Only request if you have completed all testers for your app,
+                otherwise your request will be rejected.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Handshake className="w-4 h-4 mt-0.5 text-emerald-600 shrink-0" />
+              <span>Get more testers by handshaking with more developers.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Sparkles className="w-4 h-4 mt-0.5 text-emerald-600 shrink-0" />
+              <span>
+                For hassle free app testing choose inTesters Pro Testing.
+              </span>
+            </li>
+          </ul>
 
-          {showWarning ? (
-            <div className="bg-amber-500/10 p-4 rounded-xl border border-amber-500/20 text-amber-700 dark:text-amber-400">
-              <p className="text-sm font-semibold flex items-center gap-1.5 mb-1 text-amber-800 dark:text-amber-300">
-                <AlertTriangle className="w-4 h-4 shrink-0" /> Warning: Cohort Incomplete
-              </p>
-              <p className="text-xs leading-relaxed">
-                The target number of testers has not been reached (<strong>{currentTester}</strong> joined out of <strong>{totalTester}</strong> required). Starting the test now will lock this cohort and start the 14-day duration immediately. Do you still want to proceed?
-              </p>
-            </div>
-          ) : (
-            <div className="bg-blue-500/5 p-4 rounded-xl border border-blue-500/20">
-              <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed font-medium">
-                Note: Starting the testing phase will lock the tester cohort and start the duration of testing.
+          <div className="bg-secondary/40 rounded-xl px-4 py-3 border border-border/50">
+            <p className="text-xs text-muted-foreground">
+              Testers joined:{" "}
+              <strong className="text-foreground">
+                {testersJoined} out of {totalTester || 16}
+              </strong>
+            </p>
+          </div>
+
+          {!hasEnoughTesters && (
+            <p className="text-xs font-medium text-red-600 dark:text-red-500 leading-relaxed">
+              12 Handshake Required for Request to Start Testing if 12 testers
+              not joined yet
+            </p>
+          )}
+
+          {hasEnoughTesters && (
+            <div className="bg-emerald-500/10 p-4 rounded-xl border border-emerald-500/20 text-emerald-700 dark:text-emerald-400">
+              <p className="text-xs leading-relaxed font-medium">
+                Note: Your request will be sent to admin for approval. Once
+                approved, the {totalTester || 16}-day testing period will begin.
               </p>
             </div>
           )}
@@ -101,25 +134,39 @@ export function StartTestingDialog({
             variant="ghost"
             onClick={() => onOpenChange(false)}
             className="h-11 rounded-xl px-6"
-            disabled={isStarting}
+            disabled={isSending}
           >
             Cancel
           </Button>
           <Button
-            onClick={handleStartTesting}
-            className="h-11 rounded-xl px-8 bg-emerald-500 hover:bg-emerald-500/90 text-white shadow-lg shadow-emerald-500/20"
-            disabled={isStarting}
+            onClick={handleSendRequest}
+            className="h-11 rounded-xl px-8 bg-emerald-500 hover:bg-emerald-500/90 text-white shadow-lg shadow-emerald-500/20 disabled:opacity-50"
+            disabled={isSending || !hasEnoughTesters}
+            title={
+              !hasEnoughTesters
+                ? "12 Handshake Required for Request to Start Testing if 12 testers not joined yet"
+                : undefined
+            }
           >
-            {isStarting ? (
+            {isSending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                Processing...
+                Sending...
               </>
             ) : (
-              "Start Testing"
+              "Send Request"
             )}
           </Button>
         </DialogFooter>
+
+        {!hasEnoughTesters && (
+          <div className="px-6 pb-5 -mt-2 bg-secondary/30">
+            <p className="text-xs flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+              You can send this request once 12 testers have joined your app.
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

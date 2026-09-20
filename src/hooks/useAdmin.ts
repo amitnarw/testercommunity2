@@ -135,6 +135,7 @@ import {
   deleteMailSender,
   updatePaidSubmission,
   deletePaidSubmission,
+  deleteHandshakeSubmission,
 } from "@/lib/apiCallsAdmin";
 import { getAppChatsAdmin, getAppChatsCount, getAppChatsTotalUnread } from "@/lib/apiCalls";
 import { useRouter } from "next/navigation";
@@ -1902,6 +1903,20 @@ export function useDeletePaidSubmission(options?: UseMutationOptions<any, any, a
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: ["useSubmittedApps"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useDeleteHandshakeSubmission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteHandshakeSubmission(id),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useSubmittedApps"] });
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
       options?.onSuccess?.(...args);
     },
   });

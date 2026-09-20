@@ -111,14 +111,13 @@ function AdminSubmissionsFreeContent() {
 
   const submissions = submissionsData || [];
 
-  // Fetch counts for FREE and HANDSHAKE separately and sum them (P4/F-9:
-  // HANDSHAKE rows previously had NO admin approval surface and could get
-  // stuck IN_REVIEW forever). PAID counts stay out of this page.
-  const { data: freeCounts } = useSubmittedAppsCount("FREE", true);
+  // Fetch counts for HANDSHAKE (P4/F-9: HANDSHAKE rows previously had NO
+  // admin approval surface and could get stuck IN_REVIEW forever). PAID
+  // counts stay out of this page.
   const { data: handshakeCounts } = useSubmittedAppsCount("HANDSHAKE", true);
 
   const countsData: Record<string, number> = {};
-  for (const source of [freeCounts, handshakeCounts]) {
+  for (const source of [handshakeCounts]) {
     if (!source) continue;
     const record = source as Record<string, unknown>;
     for (const [key, value] of Object.entries(record)) {
@@ -128,11 +127,11 @@ function AdminSubmissionsFreeContent() {
     }
   }
 
-  // Filter to FREE + HANDSHAKE apps and apply search query
+  // Filter to HANDSHAKE apps and apply search query
   const filteredSubmissions = submissions.filter(
     (sub: HubSubmittedAppResponse) => {
-      // Only FREE or HANDSHAKE apps (PAID lives in Pro Submissions)
-      if (sub.appType !== "FREE" && sub.appType !== "HANDSHAKE") {
+      // Only HANDSHAKE apps (PAID lives in Pro Submissions)
+      if (sub.appType !== "HANDSHAKE") {
         return false;
       }
       // Search filter

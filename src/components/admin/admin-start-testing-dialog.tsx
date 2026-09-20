@@ -23,7 +23,7 @@ interface AdminStartTestingDialogProps {
   /** P4 fix #2: HANDSHAKE campaigns must transition to TESTING_ACTIVE (the
    * backend allow-list rejects IN_TESTING for them and stamps testing dates
    * on TESTING_ACTIVE automatically). */
-  appType?: "FREE" | "PAID" | "HANDSHAKE";
+  appType?: "PAID" | "HANDSHAKE";
 }
 
 export function AdminStartTestingDialog({

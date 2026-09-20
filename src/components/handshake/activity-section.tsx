@@ -10,12 +10,16 @@ import { SafeImage } from "@/components/safe-image";
 import { EliteBadge } from "./elite-badge";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import type { HubSubmittedAppResponse } from "@/lib/types";
-
-interface ExistingHandshakesSectionProps {
-  apps: HubSubmittedAppResponse[];
-  isLoading: boolean;
-}
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { IncomingRequestsSection } from "./incoming-requests-section";
+import { OutgoingRequestsSection } from "./outgoing-requests-section";
+import type { HandshakeRequest, HubSubmittedAppResponse } from "@/lib/types";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -271,42 +275,203 @@ function RunningHandshakeCard({
   );
 }
 
-export function ExistingHandshakesSection({
-  apps,
-  isLoading,
-}: ExistingHandshakesSectionProps) {
+type ActivityFilter = "all" | "received" | "sent" | "testing" | "history";
+
+const FILTER_OPTIONS: { label: string; value: ActivityFilter }[] = [
+  { label: "All activity", value: "all" },
+  { label: "Received", value: "received" },
+  { label: "Sent", value: "sent" },
+  { label: "Testing now", value: "testing" },
+  { label: "History", value: "history" },
+];
+
+interface ActivitySectionProps {
+  incoming: HandshakeRequest[];
+  incomingLoading: boolean;
+  outgoing: HandshakeRequest[];
+  outgoingLoading: boolean;
+  testing: HubSubmittedAppResponse[];
+  testingLoading: boolean;
+  history: HubSubmittedAppResponse[];
+  historyLoading: boolean;
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <h2 className="text-sm font-semibold mb-3">{children}</h2>;
+}
+
+function EmptyLine({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-sm text-muted-foreground rounded-xl border border-dashed border-border/60 p-6 text-center">
+      {children}
+    </p>
+  );
+}
+
+/**
+ * Activity tab: everything about my handshake interactions — requests
+ * received, requests sent, apps I'm testing now, and completed history.
+ * No sub-tabs; a single right-aligned filter switches the views.
+ */
+export function ActivitySection({
+  incoming,
+  incomingLoading,
+  outgoing,
+  outgoingLoading,
+  testing,
+  testingLoading,
+  history,
+  historyLoading,
+}: ActivitySectionProps) {
   const now = useNow();
+  const [filter, setFilter] = useState<ActivityFilter>("all");
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="h-48 rounded-xl bg-muted animate-pulse" />
-        ))}
-      </div>
-    );
-  }
+  const showAll = filter === "all";
+  const showReceived = showAll || filter === "received";
+  const showSent = showAll || filter === "sent";
+  const showTesting = showAll || filter === "testing";
+  const showHistory = showAll || filter === "history";
 
-  if (!apps || apps.length === 0) {
+  const sentPending = outgoing.filter((r) => r.status === "PENDING");
+  const sentHistory = outgoing.filter((r) => r.status !== "PENDING");
+
+  const hasReceived = incomingLoading || incoming.length > 0;
+  const hasSent = outgoingLoading || sentPending.length > 0;
+  const hasTesting = testingLoading || testing.length > 0;
+  const hasHistory =
+    outgoingLoading || historyLoading || sentHistory.length > 0 || history.length > 0;
+
+  if (!hasReceived && !hasSent && !hasTesting && !hasHistory) {
     return (
-      <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-        No active handshakes yet.
+      <div className="w-full">
+        <ActivityFilterRow filter={filter} setFilter={setFilter} />
+        <EmptyLine>
+          No activity yet. Discover apps to start your first handshake.
+        </EmptyLine>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-      {apps.map((app, i) => (
-        <motion.div
-          key={app.id}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.04 }}
-        >
-          <RunningHandshakeCard app={app} now={now} />
-        </motion.div>
-      ))}
+    <div className="w-full">
+      <ActivityFilterRow filter={filter} setFilter={setFilter} />
+
+      <div className="space-y-8">
+        {showReceived && (filter !== "all" || hasReceived) && (
+          <section>
+            <SectionLabel>Requests received</SectionLabel>
+            <IncomingRequestsSection
+              items={incoming}
+              isLoading={incomingLoading}
+              compact
+              hideWhenEmpty={showAll}
+            />
+          </section>
+        )}
+
+        {showSent && (filter !== "all" || hasSent) && (
+          <section>
+            <SectionLabel>Requests sent</SectionLabel>
+            <OutgoingRequestsSection
+              items={outgoing}
+              isLoading={outgoingLoading}
+              showHistory={false}
+              onToggleHistory={() => {}}
+              compact
+              view="pending"
+            />
+          </section>
+        )}
+
+        {showTesting && (filter !== "all" || hasTesting) && (
+          <section>
+            <SectionLabel>Testing now</SectionLabel>
+            {testingLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-48 rounded-xl bg-muted animate-pulse" />
+                ))}
+              </div>
+            ) : testing.length === 0 ? (
+              <EmptyLine>Nothing in testing right now.</EmptyLine>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {testing.map((app, i) => (
+                  <motion.div
+                    key={app.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.04 }}
+                  >
+                    <RunningHandshakeCard app={app} now={now} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {showHistory && (filter !== "all" || hasHistory) && (
+          <section>
+            <SectionLabel>History</SectionLabel>
+            <div className="space-y-4">
+              <OutgoingRequestsSection
+                items={outgoing}
+                isLoading={outgoingLoading}
+                showHistory={false}
+                onToggleHistory={() => {}}
+                compact
+                view="history"
+              />
+              {historyLoading ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="h-48 rounded-xl bg-muted animate-pulse" />
+                  ))}
+                </div>
+              ) : history.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {history.map((app, i) => (
+                    <motion.div
+                      key={app.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                    >
+                      <RunningHandshakeCard app={app} now={now} />
+                    </motion.div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </section>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ActivityFilterRow({
+  filter,
+  setFilter,
+}: {
+  filter: ActivityFilter;
+  setFilter: (v: ActivityFilter) => void;
+}) {
+  return (
+    <div className="flex items-center justify-end mb-4">
+      <Select value={filter} onValueChange={(v) => setFilter(v as ActivityFilter)}>
+        <SelectTrigger className="w-[160px] h-9 text-sm">
+          <SelectValue placeholder="Filter activity" />
+        </SelectTrigger>
+        <SelectContent>
+          {FILTER_OPTIONS.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value}>
+              {opt.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 }

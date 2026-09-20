@@ -2,7 +2,7 @@
 
 import React from "react";
 import { usePathname } from "next/navigation";
-import { Zap } from "lucide-react";
+import { Building2, Handshake, Star, Zap } from "lucide-react";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { ProfessionalPlanCard } from "./pricing-cards";
 import { PricingResponse } from "@/lib/types";
@@ -83,6 +83,20 @@ function resolvePlanCta(
   };
 }
 
+const PLAN_ICON_CLASS = "w-20 h-20 text-white";
+
+// Decorative corner icon per plan, mirroring the sidebar/mobile-menu
+// conventions (Handshake -> Handshake, Pro Testing -> Zap).
+function getPlanAccentIcon(plan: PricingResponse): React.ReactNode {
+  if (plan.id === "handshake")
+    return <Handshake className={PLAN_ICON_CLASS} />;
+  if (plan.id === "enterprise")
+    return <Building2 className={PLAN_ICON_CLASS} />;
+  if (plan.billingType === "ONE_TIME")
+    return <Zap className={PLAN_ICON_CLASS} />;
+  return <Star className="w-20 h-20 fill-current text-white" />;
+}
+
 export function PricingCardsGrid({
   variant = "pricing",
   className = "",
@@ -140,6 +154,7 @@ export function PricingCardsGrid({
               <ProfessionalPlanCard
                 key={plan.id}
                 plan={plan}
+                accentIcon={getPlanAccentIcon(plan)}
                 actionButton={
                   <div className="w-full">
                     <HoverBorderGradient
@@ -163,6 +178,7 @@ export function PricingCardsGrid({
           <ProfessionalPlanCard
             key={plan.id}
             plan={plan}
+            accentIcon={getPlanAccentIcon(plan)}
             ctaLabel={ctaLabel}
             ctaHref={cta.href}
           />

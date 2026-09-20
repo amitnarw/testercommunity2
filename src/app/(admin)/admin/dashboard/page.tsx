@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
       .slice(0, 2) || [];
   const recentCommunitySubmissions =
     stats?.recentSubmissions
-      ?.filter((s: any) => s.appType === "FREE")
+      ?.filter((s: any) => s.appType === "HANDSHAKE")
       .slice(0, 2) || [];
 
   return (

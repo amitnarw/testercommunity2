@@ -39,7 +39,7 @@ export interface AdminAssignedTestersTableProps {
   testerRelations: HubSubmittedAppResponse["testerRelations"];
   appId: number;
   totalDays: number;
-  appType: "PAID" | "FREE";
+  appType: "PAID" | "HANDSHAKE";
   onRefetch: () => void;
 }
 

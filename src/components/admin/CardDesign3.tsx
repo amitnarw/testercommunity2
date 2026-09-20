@@ -15,7 +15,7 @@ export function CardDesign3({
 }) {
   const totalUsers = stats?.totalUsers || 0;
   const completedPaidApps = stats?.completedPaidApps || 0;
-  const completedFreeApps = stats?.completedFreeApps || 0;
+  const completedHandshakeApps = stats?.completedHandshakeApps || 0;
   const paidTesters = stats?.paidTesters || 0;
 
   return (
@@ -93,7 +93,7 @@ export function CardDesign3({
               </p>
               <div className="flex items-baseline gap-1">
                 <p className="text-2xl font-bold text-foreground tabular-nums">
-                  {isLoading ? "..." : completedFreeApps}
+                  {isLoading ? "..." : completedHandshakeApps}
                 </p>
                 <span className="text-[10px] text-muted-foreground font-medium">
                   Projects

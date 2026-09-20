@@ -69,7 +69,7 @@ export function CustomTabsList({
                 {tab.label}
                 {isLoading ? (
                   <Skeleton className="w-4 h-4 rounded-full" />
-                ) : (
+                ) : tab.count !== undefined ? (
                   <span
                     className={cn(
                       "text-[10px] w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center rounded-full",
@@ -78,9 +78,9 @@ export function CustomTabsList({
                         : "bg-primary/5 text-muted-foreground group-hover:bg-muted/80",
                     )}
                   >
-                    {tab.count ?? 0}
+                    {tab.count}
                   </span>
-                )}
+                ) : null}
               </span>
             </TabsTrigger>
           );

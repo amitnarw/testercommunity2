@@ -30,6 +30,7 @@ interface VerificationData {
   id: number;
   dayNumber: number;
   proofImageUrl: string;
+  remark?: string | null;
   status: "PENDING" | "VERIFIED" | "REJECTED";
   verifiedAt: string;
   rejectionReason?: string;
@@ -287,6 +288,18 @@ export function AdminVerificationReview({
                     </Badge>
                   </div>
                 </div>
+
+                {/* Tester Remark */}
+                {selectedVerification?.remark && (
+                  <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-2 animate-in fade-in slide-in-from-top-2">
+                    <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-wider">
+                      <Eye className="w-4 h-4" /> Tester&apos;s Remark
+                    </div>
+                    <p className="text-sm text-foreground/80 leading-relaxed">
+                      {selectedVerification.remark}
+                    </p>
+                  </div>
+                )}
 
                 {/* Status-specific Display */}
                 {selectedVerification?.status === "REJECTED" &&

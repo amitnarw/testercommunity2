@@ -6,9 +6,13 @@ import {
   getRecentMissedDays,
   adminReplaceTester,
   adminForceHandshake,
+  getStartRequests,
+  approveStartRequest,
+  rejectStartRequest,
 } from "@/lib/apiCalls";
 import type {
   HandshakeMonitoringOverview,
+  StartRequestCampaign,
   WaitingCampaign,
   PenalizedUser,
   MissedDayRecord,
@@ -65,6 +69,52 @@ export function useAdminReplaceTester(
       queryClient.invalidateQueries({ queryKey: ["penalized-users"] });
       queryClient.invalidateQueries({ queryKey: ["monitoring-overview"] });
       options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useStartRequests() {
+  return useQuery<{ items: StartRequestCampaign[] }>({
+    queryKey: ["start-requests"],
+    queryFn: () => getStartRequests(),
+    refetchInterval: 60_000,
+  });
+}
+
+export function useApproveStartRequest(
+  options?: Parameters<
+    typeof useMutation<unknown, Error, { campaignId: number }>
+  >[0],
+) {
+  const queryClient = useQueryClient();
+  return useMutation<unknown, Error, { campaignId: number }>({
+    mutationFn: (payload) => approveStartRequest(payload),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["start-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["monitoring-overview"] });
+      options?.onSuccess?.(...args);
+    },
+    onError: (...args) => {
+      options?.onError?.(...args);
+    },
+  });
+}
+
+export function useRejectStartRequest(
+  options?: Parameters<
+    typeof useMutation<unknown, Error, { campaignId: number; remark: string }>
+  >[0],
+) {
+  const queryClient = useQueryClient();
+  return useMutation<unknown, Error, { campaignId: number; remark: string }>({
+    mutationFn: (payload) => rejectStartRequest(payload),
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["start-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["monitoring-overview"] });
+      options?.onSuccess?.(...args);
+    },
+    onError: (...args) => {
+      options?.onError?.(...args);
     },
   });
 }
