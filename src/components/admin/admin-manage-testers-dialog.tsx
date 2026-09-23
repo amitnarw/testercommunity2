@@ -40,6 +40,9 @@ interface AdminManageTestersDialogProps {
   totalRequired: number;
   currentAssigned: number;
   assignedTesterIds?: string[];
+  /** When true (paid/pro testing apps), only users with the "tester" role
+   *  are eligible. Otherwise any active handshake-eligible user is shown. */
+  testersOnly?: boolean;
 }
 
 const AVAILABILITY_CONFIG: Record<
@@ -87,6 +90,7 @@ export function AdminManageTestersDialog({
   totalRequired,
   currentAssigned,
   assignedTesterIds = [],
+  testersOnly = false,
 }: AdminManageTestersDialogProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTesterIds, setSelectedTesterIds] = useState<string[]>([]);
@@ -94,8 +98,9 @@ export function AdminManageTestersDialog({
   // Only fetch testers when the modal is open (lazy load).
   // S13: drop the `role: "tester"` filter so admin can assign any active user
   // (regular handshake users too), not only the pro-tester pool.
+  // testersOnly (paid/pro testing): restrict server-side to the tester role.
   const { data: usersData, isLoading: isLoadingUsers } = useAllUsers(
-    undefined,
+    testersOnly ? { role: "tester" } : undefined,
     { enabled: open },
   );
 
@@ -126,7 +131,17 @@ export function AdminManageTestersDialog({
   // S14: only handshake-eligible roles. Admin / super_admin / support /
   // moderator / guide_admin etc. are excluded , assigning them as
   // testers makes no product sense.
-  const ALLOWED_ROLES = new Set(["user", "tester"]);
+  // testersOnly (paid/pro testing): tester role only. The client-side check
+  // stays as a safety net , the backend returns ALL users when the role
+  // record lookup finds nothing, and its role field is case-inconsistent
+  // (lowercase DB names vs capitalized "User" fallback).
+  const ALLOWED_ROLES = useMemo(
+    () =>
+      testersOnly
+        ? new Set(["tester"])
+        : new Set(["user", "tester"]),
+    [testersOnly],
+  );
 
   const availableUsers =
     usersData?.filter(
@@ -135,7 +150,7 @@ export function AdminManageTestersDialog({
         !assignedTesterIds.includes(user.id) &&
         // don't let admin assign the owner to their own campaign
         user.id !== appOwnerId &&
-        ALLOWED_ROLES.has(user?.role),
+        ALLOWED_ROLES.has(user?.role?.toLowerCase?.() ?? ""),
     ) || [];
 
   const filteredUsers = availableUsers.filter((user: any) => {
@@ -190,9 +205,9 @@ export function AdminManageTestersDialog({
               Assign Testers
             </DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">
-              Pick an active handshake user or pro tester. Admin, support,
-              and moderator accounts are hidden. Sorted by availability and
-              workload.
+              {testersOnly
+                ? "Pick a pro tester. Admin, support, and moderator accounts are hidden. Sorted by availability and workload."
+                : "Pick an active handshake user or pro tester. Admin, support, and moderator accounts are hidden. Sorted by availability and workload."}
             </DialogDescription>
           </DialogHeader>
           <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">

@@ -13,26 +13,26 @@ import {
   CheckCircle,
   Clock,
   Search,
-  Star,
   XCircle,
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, Suspense, type SetStateAction, useEffect } from "react";
-import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/safe-image";
 import { cn } from "@/lib/utils";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
-import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import { motion, AnimatePresence } from "framer-motion";
-import SubTabUI from "@/components/sub-tab-ui";
-import { useTransitionRouter } from "@/context/transition-context";
-import { PageHeader } from "@/components/page-header";
-import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
+import { useHubSubmittedApp } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Helper to filter out paid apps from displaying in the Handshake Testing
 const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
@@ -61,6 +61,15 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
         bgColor: "bg-emerald-500/10",
         borderColor: "border-emerald-500/20",
         description: "Your app is available for testing.",
+      };
+    case "START_REQUESTED":
+      return {
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "Pending Approval",
+        color: "text-amber-600",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
+        description: "Your start request is pending admin approval.",
       };
     case "IN_TESTING":
       return {
@@ -358,7 +367,7 @@ const PaginatedProjectList = ({
       >
         {currentProjects && currentProjects?.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-            {currentProjects?.map((project, index) => (
+            {currentProjects?.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
@@ -379,258 +388,96 @@ const PaginatedProjectList = ({
   );
 };
 
-const STATUS_MAPPING: Record<string, string> = {
-  "in-review": "IN_REVIEW",
-  draft: "DRAFT",
-  rejected: "REJECTED",
-  testing: "IN_TESTING",
-  completed: "COMPLETED",
-  "on-hold": "ON_HOLD",
-  requested: "REQUESTED",
-  available: "AVAILABLE",
-};
+type MyAppsFilter = "all" | "pending" | "testing" | "completed";
 
-function MySubmissionsContent() {
-  const router = useTransitionRouter();
+const FILTER_OPTIONS: { label: string; value: MyAppsFilter }[] = [
+  { label: "All apps", value: "all" },
+  { label: "Pending", value: "pending" },
+  { label: "In Testing", value: "testing" },
+  { label: "Completed", value: "completed" },
+];
 
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  // We use the standard router for efficient query param updates without triggering page transitions
-  const navigationRouter = useRouter();
+export function MySubmissionsSection() {
+  // Single flat list with a right-aligned status filter (no sub-tabs).
+  const [filter, setFilter] = useState<MyAppsFilter>("all");
 
-  // Initialize state from URL queries to persist selection across navigation, but use local state for instant updates
-  const [mainTab, setMainTabState] = useState(
-    searchParams.get("tab") || "pending",
-  );
-  const [pendingSubTab, setPendingSubTabState] = useState(
-    searchParams.get("subTab") || "in-review",
-  );
+  // Pending: In Review + Rejected merged (In Review first, newest first).
+  const { data: inReviewApps, isPending: inReviewIsPending } =
+    useHubSubmittedApp({ type: "IN_REVIEW" });
+  const { data: rejectedApps, isPending: rejectedIsPending } =
+    useHubSubmittedApp({ type: "REJECTED" });
 
-  // Sync with URL changes (e.g. back button)
-  useEffect(() => {
-    const tab = searchParams.get("tab") || "pending";
-    if (tab !== mainTab) setMainTabState(tab);
-
-    const subTab = searchParams.get("subTab") || "in-review";
-    if (subTab !== pendingSubTab) setPendingSubTabState(subTab);
-  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const setMainTab = (val: string) => {
-    // Instant UI update
-    setMainTabState(val);
-
-    // Background URL update
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", val);
-
-    if (val !== "pending") {
-      params.delete("subTab");
-    } else if (pendingSubTab) {
-      params.set("subTab", pendingSubTab);
-    }
-
-    navigationRouter.replace(`${pathname}?${params.toString()}`, {
-      scroll: false,
-    });
-  };
-
-  const setPendingSubTab = (val: SetStateAction<string>) => {
-    const value = val instanceof Function ? val(pendingSubTab) : val;
-
-    // Instant UI update
-    setPendingSubTabState(value);
-
-    // Background URL update
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("subTab", value);
-    navigationRouter.replace(`${pathname}?${params.toString()}`, {
-      scroll: false,
-    });
-  };
-
-  const openPage = (page: string) => {
-    router.push(page);
-  };
-
-  const activeTab = mainTab === "pending" ? pendingSubTab : mainTab;
-  const backendType = STATUS_MAPPING[activeTab] || "IN_REVIEW";
-
-  const { data: submittedAppsData, isPending: submittedAppsIsPending } =
-    useHubSubmittedApp({
-      type: backendType,
-    });
-
+  // Testing: IN_TESTING (backend also folds in WAITING_FOR_PARTNERS +
+  // TESTING_ACTIVE) + AVAILABLE.
+  const { data: testingApps, isPending: testingIsPending } =
+    useHubSubmittedApp({ type: "IN_TESTING" });
   const { data: availableAppsData, isPending: availableAppsIsPending } =
-    useHubSubmittedApp({
-      type: "AVAILABLE",
-      options: { enabled: mainTab === "testing" },
-    });
+    useHubSubmittedApp({ type: "AVAILABLE" });
+
+  const { data: completedApps, isPending: completedIsPending } =
+    useHubSubmittedApp({ type: "COMPLETED" });
+
+  const byNewest = (
+    a: HubSubmittedAppResponse,
+    b: HubSubmittedAppResponse,
+  ) => {
+    const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return tb - ta;
+  };
+
+  const pendingApps = [
+    ...[...(inReviewApps ?? [])].sort(byNewest),
+    ...[...(rejectedApps ?? [])].sort(byNewest),
+  ];
+  const testingAppsMerged = [...(testingApps || []), ...(availableAppsData || [])];
 
   const displayDataRaw =
-    mainTab === "testing"
-      ? [...(submittedAppsData || []), ...(availableAppsData || [])]
-      : submittedAppsData;
+    filter === "pending"
+      ? pendingApps
+      : filter === "testing"
+        ? testingAppsMerged
+        : filter === "completed"
+          ? completedApps
+          : [...pendingApps, ...testingAppsMerged, ...(completedApps ?? [])].sort(
+              byNewest,
+            );
 
   const displayData = filterFreeApps(displayDataRaw);
 
   const displayIsPending =
-    mainTab === "testing"
-      ? submittedAppsIsPending || availableAppsIsPending
-      : submittedAppsIsPending;
-
-  const {
-    data: submittedAppsCountData,
-    isPending: submittedAppsCountIsPending,
-  } = useHubSubmittedAppsCount();
-
-  const mainTabs = [
-    {
-      label: "Pending",
-      value: "pending",
-      count:
-        (submittedAppsCountData?.IN_REVIEW || 0) +
-        (submittedAppsCountData?.DRAFT || 0) +
-        (submittedAppsCountData?.REJECTED || 0),
-    },
-    {
-      label: "Testing",
-      value: "testing",
-      count:
-        (submittedAppsCountData?.IN_TESTING || 0) +
-        (submittedAppsCountData?.AVAILABLE || 0),
-    },
-    {
-      label: "Completed",
-      value: "completed",
-      count: submittedAppsCountData?.COMPLETED || 0,
-    },
-  ];
-
-  const pendingTabs = [
-    {
-      label: "In Review",
-      value: "in-review",
-      count: submittedAppsCountData?.IN_REVIEW || 0,
-    },
-    {
-      label: "Rejected",
-      value: "rejected",
-      count: submittedAppsCountData?.REJECTED || 0,
-    },
-  ];
+    inReviewIsPending ||
+    rejectedIsPending ||
+    testingIsPending ||
+    availableAppsIsPending ||
+    completedIsPending;
 
   return (
-    <>
-      <div className="min-h-screen mb-12">
-        <div className="container mx-auto px-4 md:px-6">
-          <main className="space-y-4">
-            <PageHeader
-              title="My Submissions"
-              backHref="/app/handshake-testing"
-              className="w-1/2 px-0 whitespace-nowrap"
-              titleClassName="text-emerald-600"
-            />
-            <div className="flex flex-row items-center justify-end gap-4 w-full">
-              <Button
-                className="bg-gradient-to-b from-emerald-600 to-emerald-700 text-white px-3 h-8 sm:p-auto sm:h-10"
-                onClick={() => openPage("/app/handshake-testing/submit")}
-              >
-                <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
-                <span>Submit New App</span>
-              </Button>
-            </div>
-
-            <Tabs
-              value={mainTab}
-              onValueChange={setMainTab}
-              className="w-full space-y-8"
-            >
-              <CustomTabsList
-                tabs={mainTabs}
-                activeTab={mainTab}
-                isLoading={submittedAppsCountIsPending}
-              />
-
-              <div className="min-h-[500px]">
-                <TabsContent
-                  value="pending"
-                  className="space-y-6 focus-visible:ring-0"
-                >
-                  <SubTabUI
-                    tabs={pendingTabs}
-                    onTabChange={setPendingSubTab}
-                    activeTab={pendingSubTab}
-                  />
-
-                  <PaginatedProjectList
-                    projects={displayData}
-                    isLoading={displayIsPending}
-                  />
-                </TabsContent>
-
-                <TabsContent value="testing" className="focus-visible:ring-0">
-                  <PaginatedProjectList
-                    projects={displayData}
-                    isLoading={displayIsPending}
-                  />
-                </TabsContent>
-
-                <TabsContent value="completed" className="focus-visible:ring-0">
-                  <PaginatedProjectList
-                    projects={displayData}
-                    isLoading={displayIsPending}
-                  />
-                </TabsContent>
-              </div>
-            </Tabs>
-          </main>
-        </div>
+    <div className="w-full">
+      <div className="flex items-center justify-end mb-4">
+        <Select
+          value={filter}
+          onValueChange={(v) => setFilter(v as MyAppsFilter)}
+        >
+          <SelectTrigger className="w-[160px] h-9 text-sm">
+            <SelectValue placeholder="Filter apps" />
+          </SelectTrigger>
+          <SelectContent>
+            {FILTER_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
-    </>
-  );
-}
 
-export default function MySubmissionsPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen mb-12">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="space-y-4 pt-4">
-              <div className="flex flex-row items-center justify-between w-full">
-                <div className="h-8 w-48 bg-muted/20 animate-pulse rounded-md" />
-                <div className="h-10 w-40 bg-muted/20 animate-pulse rounded-md" />
-              </div>
-              <div className="h-12 w-full bg-muted/20 animate-pulse rounded-md mt-8" />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="h-[320px]">
-                    <div className="rounded-[1.5rem] border border-border/40 bg-card/50 p-6 h-full flex flex-col gap-4">
-                      <div className="flex items-start gap-4">
-                        <Skeleton className="w-16 h-16 rounded-2xl" />
-                        <div className="flex-1 space-y-2">
-                          <Skeleton className="h-5 w-3/4" />
-                          <Skeleton className="h-4 w-1/2" />
-                        </div>
-                      </div>
-                      <div className="space-y-2 flex-grow">
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-5/6" />
-                      </div>
-                      <div className="pt-4 border-t border-dashed border-border/50 flex justify-between">
-                        <Skeleton className="h-4 w-20" />
-                        <Skeleton className="h-4 w-20" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-    >
-      <MySubmissionsContent />
-    </Suspense>
+      <div className="min-h-[500px]">
+        <PaginatedProjectList
+          projects={displayData}
+          isLoading={displayIsPending}
+        />
+      </div>
+    </div>
   );
 }

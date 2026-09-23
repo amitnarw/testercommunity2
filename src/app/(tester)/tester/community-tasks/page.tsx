@@ -158,7 +158,7 @@ const PaginatedTaskList = ({
 };
 
 export default function CommunityTasksPage() {
-  const { data: projects, isLoading, isError, error } = useTesterProjects(undefined, "FREE");
+  const { data: projects, isLoading, isError, error } = useTesterProjects(undefined, "HANDSHAKE");
 
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">

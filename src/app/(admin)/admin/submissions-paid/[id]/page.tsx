@@ -37,14 +37,14 @@ import {
   CalendarDays,
   Activity,
   ArrowRight,
-ChevronRight,
-    Pencil,
-    Loader2,
-    CheckCircle2,
-    Eye,
-    Trash2,
-    RotateCcw,
-  } from "lucide-react";
+  ChevronRight,
+  Pencil,
+  Loader2,
+  CheckCircle2,
+  Eye,
+  Trash2,
+  RotateCcw,
+} from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -54,9 +54,12 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
-import { useUpdateProjectStatus, useDeletePaidSubmission } from "@/hooks/useAdmin";
+import {
+  useUpdateProjectStatus,
+  useDeletePaidSubmission,
+} from "@/hooks/useAdmin";
 import { toast } from "@/hooks/use-toast";
 import { useAppChatUnreadCount } from "@/hooks/useAppChatUnreadCount";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -170,11 +173,18 @@ export default function AdminSubmissionDetailPage({
 
   const { mutate: deleteSubmission } = useDeletePaidSubmission({
     onSuccess: () => {
-      toast({ title: "Deleted", description: "Submission deleted successfully." });
+      toast({
+        title: "Deleted",
+        description: "Submission deleted successfully.",
+      });
       router.push("/admin/submissions-paid");
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err?.message || "Failed to delete.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err?.message || "Failed to delete.",
+        variant: "destructive",
+      });
     },
     onSettled: () => setIsDeleting(false),
   });
@@ -192,7 +202,11 @@ export default function AdminSubmissionDetailPage({
     refetch,
   } = useSingleHubAppDetails({ id });
 
-  const { count: unreadCount, reset: resetUnread, markRead } = useAppChatUnreadCount(project?.id ?? null, "admin", showChatDialog);
+  const {
+    count: unreadCount,
+    reset: resetUnread,
+    markRead,
+  } = useAppChatUnreadCount(project?.id ?? null, "admin", showChatDialog);
 
   const handleAdminComplete = () => {
     setShowCompleteDialog(true);
@@ -310,15 +324,15 @@ export default function AdminSubmissionDetailPage({
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="pt-2 pb-4 pl-0 xl:pl-4">
-          <BackButton href="/admin/submissions-paid" />
-        </div>
+        <PageHeader
+          title=""
+          backHref="/admin/submissions-paid"
+          className="pl-0 xl:pl-4 w-1/6"
+        />
 
         <main className="max-w-7xl mx-auto flex flex-col gap-8 mt-2">
           {/* Header Action Card - THE MOST CRITICAL BUTTONS & APP STATUS */}
           <div className="bg-card border border-border/60 shadow-xl shadow-black/5 rounded-3xl p-3 sm:p-6 md:p-8 flex flex-col gap-6 relative">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
-
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex items-center gap-5 z-10 w-full md:w-1/2">
                 <div className="flex flex-col items-center gap-1 sm:gap-2">
@@ -408,7 +422,11 @@ export default function AdminSubmissionDetailPage({
                       'Type "DELETE" to confirm permanent deletion of this submission:',
                     );
                     if (reason !== "DELETE") {
-                      toast({ title: "Cancelled", description: "Deletion requires typing DELETE to confirm." });
+                      toast({
+                        title: "Cancelled",
+                        description:
+                          "Deletion requires typing DELETE to confirm.",
+                      });
                       return;
                     }
                     setIsDeleting(true);
@@ -475,25 +493,25 @@ export default function AdminSubmissionDetailPage({
                   </Button>
                 )}
 
-{(project.status === "ACCEPTED" ||
-                    project.status === "AVAILABLE" ||
-                    project.status === "IN_TESTING") && (
-                    <Button
-                      onClick={handleAdminComplete}
-                      className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
-                    >
-                      <CheckCircle2 className="w-4 h-4 mr-1.5" /> Complete Testing
-                    </Button>
-                  )}
+                {(project.status === "ACCEPTED" ||
+                  project.status === "AVAILABLE" ||
+                  project.status === "IN_TESTING") && (
+                  <Button
+                    onClick={handleAdminComplete}
+                    className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1.5" /> Complete Testing
+                  </Button>
+                )}
 
-                  {project.status === "COMPLETED" && (
-                    <Button
-                      onClick={() => setShowRestartDialog(true)}
-                      className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
-                    >
-                      <RotateCcw className="w-4 h-4 mr-1.5" /> Reopen Testing
-                    </Button>
-                  )}
+                {project.status === "COMPLETED" && (
+                  <Button
+                    onClick={() => setShowRestartDialog(true)}
+                    className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
+                  >
+                    <RotateCcw className="w-4 h-4 mr-1.5" /> Reopen Testing
+                  </Button>
+                )}
 
                 {project.status === "AVAILABLE" && (
                   <Button
@@ -649,7 +667,7 @@ export default function AdminSubmissionDetailPage({
                 {/* Financial Breakdown Sequence */}
                 <div className="p-6 flex-1 flex flex-col justify-center bg-card">
                   {/* Step 1: Input */}
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 shadow-sm">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-2xl bg-blue-500/10 shadow-sm">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
                         <Wallet className="w-5 h-5" />
@@ -675,7 +693,7 @@ export default function AdminSubmissionDetailPage({
 
                     <div className="relative group">
                       <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-muted-foreground transition-colors group-hover:bg-red-400 z-10" />
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm py-3 px-4 rounded-2xl bg-background border border-border/50 shadow-sm hover:border-border transition-colors">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm py-3 px-4 rounded-2xl bg-muted-foreground/10 hover:border-border transition-colors">
                         <span className="text-muted-foreground font-medium flex items-center gap-2">
                           <Users className="w-4 h-4 text-emerald-500" />
                           {requiredTesters || 0} Testers × ₹
@@ -689,7 +707,7 @@ export default function AdminSubmissionDetailPage({
 
                     <div className="relative group">
                       <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-emerald-500 transition-transform group-hover:scale-110 z-10 shadow-sm shadow-emerald-500/20" />
-                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 shadow-sm">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-4 rounded-2xl bg-emerald-500/10">
                         <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
                           Platform Earnings
                         </span>
@@ -1107,28 +1125,30 @@ export default function AdminSubmissionDetailPage({
       />
       <AdminManageTestersDialog
         appId={project.id}
+        appOwnerId={project.appOwnerId}
         open={showManageTestersDialog}
         onOpenChange={setShowManageTestersDialog}
         onSuccess={() => refetch()}
         totalRequired={project.totalTester}
         currentAssigned={project.currentTester}
+        testersOnly
         assignedTesterIds={
           project.testerRelations?.map((rel) => rel.testerId) || []
         }
       />
-<AdminCompleteDialog
-          appId={project.id}
-          open={showCompleteDialog}
-          onOpenChange={setShowCompleteDialog}
-          onSuccess={() => refetch()}
-        />
-        <AdminRestartDialog
-          appId={project.id}
-          appName={project.androidApp?.appName}
-          open={showRestartDialog}
-          onOpenChange={setShowRestartDialog}
-          onSuccess={() => refetch()}
-        />
+      <AdminCompleteDialog
+        appId={project.id}
+        open={showCompleteDialog}
+        onOpenChange={setShowCompleteDialog}
+        onSuccess={() => refetch()}
+      />
+      <AdminRestartDialog
+        appId={project.id}
+        appName={project.androidApp?.appName}
+        open={showRestartDialog}
+        onOpenChange={setShowRestartDialog}
+        onSuccess={() => refetch()}
+      />
 
       {/* App Chat Dialog */}
       <Dialog
@@ -1142,7 +1162,10 @@ export default function AdminSubmissionDetailPage({
           }
         }}
       >
-        <DialogContent className="w-full h-dvh sm:max-w-2xl sm:h-[80vh] flex flex-col p-0 gap-0 overflow-hidden rounded-none sm:rounded-2xl" hideClose>
+        <DialogContent
+          className="w-full h-dvh sm:max-w-2xl sm:h-[80vh] flex flex-col p-0 gap-0 overflow-hidden rounded-none sm:rounded-2xl"
+          hideClose
+        >
           <VisuallyHidden.Root asChild>
             <DialogTitle>Testing Manager Chat</DialogTitle>
           </VisuallyHidden.Root>

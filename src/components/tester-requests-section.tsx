@@ -30,6 +30,9 @@ import {
   Clock,
   CalendarDays,
   Info,
+  Lock,
+  ArrowRight,
+  MessageSquareText,
 } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -66,6 +69,7 @@ import { cn } from "@/lib/utils";
 
 import { ActionFeedbackDialog } from "@/components/action-feedback-dialog";
 import { SafeImage } from "@/components/safe-image";
+import { EliteBadge } from "@/components/handshake/elite-badge";
 import { format } from "date-fns";
 import { updateDailyVerificationStatus } from "@/lib/apiCalls";
 
@@ -77,6 +81,12 @@ export interface TesterRequestsSectionProps {
   /** Owner campaign status — when WAITING_FOR_PARTNERS, tester rows show
    * partner "Ready / Finding testers" badges (spec) instead of raw status. */
   campaignStatus?: string;
+  /**
+   * Handshake owner daily gate (owner view, TESTING_ACTIVE). When `locked`,
+   * the joined-testers list renders a lock panel until the owner submits
+   * today's proof on their reciprocal relations. Null/undefined = no gating.
+   */
+  ownerDailyGate?: HubSubmittedAppResponse["ownerDailyGate"];
 }
 
 export function TesterRequestsSection({
@@ -85,8 +95,10 @@ export function TesterRequestsSection({
   refetch,
   totalDay,
   campaignStatus,
+  ownerDailyGate,
 }: TesterRequestsSectionProps) {
   const showReadiness = campaignStatus === "WAITING_FOR_PARTNERS";
+  const joinedLocked = ownerDailyGate?.locked === true;
   const [selectedRequest, setSelectedRequest] = useState<
     (typeof requests)[0] | null
   >(null);
@@ -101,6 +113,7 @@ export function TesterRequestsSection({
     id: number;
     dayNumber: number;
     proofImageUrl: string;
+    remark?: string | null;
     status: "PENDING" | "VERIFIED" | "REJECTED";
     verifiedAt: string;
     rejectionReason?: string;
@@ -777,11 +790,78 @@ export function TesterRequestsSection({
         </TabsContent>
 
         <TabsContent value="joined" className="space-y-4">
+          {joinedLocked && ownerDailyGate ? (
+            <div className="rounded-xl border bg-card shadow-sm p-6 sm:p-10 text-center flex flex-col items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center">
+                <Lock className="w-7 h-7 text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="space-y-1">
+                <h3 className="text-lg font-bold">
+                  Test today to unlock your testers
+                </h3>
+                <p className="text-sm text-muted-foreground max-w-md mx-auto">
+                  In handshake testing both partners test each other&apos;s app
+                  every day. Submit today&apos;s proof for your partner&apos;s
+                  app to view your joined testers.
+                </p>
+              </div>
+              <Badge
+                variant="outline"
+                className="font-medium text-xs bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20"
+              >
+                {ownerDailyGate.submitted} of {ownerDailyGate.required}{" "}
+                partner app{ownerDailyGate.required === 1 ? "" : "s"} tested
+                today
+              </Badge>
+              <div className="w-full max-w-md space-y-2">
+                {ownerDailyGate.partners.map((p) => (
+                  <Link
+                    key={p.hubId}
+                    href={`/app/handshake-testing/${p.hubId}`}
+                    className="flex items-center gap-3 rounded-xl border bg-secondary/20 p-3 hover:bg-secondary/40 transition-colors text-left"
+                  >
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-muted border border-border/40 flex-shrink-0">
+                      {p.appLogoUrl ? (
+                        <SafeImage
+                          src={p.appLogoUrl}
+                          alt={p.appName || "Partner app"}
+                          fill
+                          className="object-cover"
+                        />
+                      ) : null}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold truncate">
+                        {p.appName || "Partner app"}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground">
+                        {p.submittedToday
+                          ? "Today's proof submitted"
+                          : "Today's proof pending"}
+                      </p>
+                    </div>
+                    {p.submittedToday ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+                    ) : (
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-primary flex-shrink-0">
+                        Test now
+                        <ArrowRight className="w-4 h-4" />
+                      </span>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <>
           <div className="rounded-xl border bg-card shadow-sm overflow-hidden hidden md:grid md:grid-cols-1">
             <Table>
               <TableHeader className="bg-muted/50">
                 <TableRow>
-                  <TableHead className="w-[300px]">Tester</TableHead>
+                  <TableHead className="w-[260px]">Tester</TableHead>
+                  <TableHead>Their App</TableHead>
+                  <TableHead>Level</TableHead>
+                  <TableHead>Device</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-center">Verification</TableHead>
                 </TableRow>
@@ -797,29 +877,96 @@ export function TesterRequestsSection({
                       className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                     >
                       <TableCell className="py-4">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-semibold text-sm">
-                            {req.tester?.name || "Unknown"}
-                          </span>
-                          {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <span className="inline-flex items-center gap-1">
-                                  <Badge
-                                    variant="outline"
-                                    className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
-                                  >
-                                    Pro
-                                  </Badge>
-                                  <Info className="h-3 w-3 text-muted-foreground/50 cursor-help" />
-                                </span>
-                              </TooltipTrigger>
-                              <TooltipContent side="top">
-                                <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          )}
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10 border border-border">
+                            <AvatarImage src={req.tester?.image || ""} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                              {req.tester?.name?.charAt(0) || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-semibold text-sm">
+                              {req.tester?.name || "Unknown"}
+                            </span>
+                            {(req as any).assignmentSource ===
+                              "ADMIN_ASSIGNED" && (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex items-center gap-1">
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                                    >
+                                      Pro
+                                    </Badge>
+                                    <Info className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="top">
+                                  <p>
+                                    This is a paid professional tester, assigned
+                                    by the admin as a gift for your app testing.
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
+                            )}
+                          </div>
                         </div>
+                      </TableCell>
+                      <TableCell>
+                        {req.offeredApp?.androidApp ? (
+                          <Link
+                            href={`/app/handshake-testing/${req.offeredApp.id}`}
+                            className="flex items-center gap-2 group min-w-0"
+                          >
+                            <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-muted border border-border/40 flex-shrink-0">
+                              {req.offeredApp.androidApp.appLogoUrl ? (
+                                <SafeImage
+                                  src={req.offeredApp.androidApp.appLogoUrl}
+                                  alt={req.offeredApp.androidApp.appName}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : null}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-sm font-semibold truncate group-hover:text-primary transition-colors">
+                                {req.offeredApp.androidApp.appName}
+                              </p>
+                              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                Their handshake app
+                              </p>
+                            </div>
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+                            L{req.tester?.handshakeLevel ?? 1}
+                          </span>
+                          {req.tester?.eliteBadge ? (
+                            <EliteBadge size="xs" />
+                          ) : null}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="outline"
+                          className="font-normal text-xs gap-1"
+                        >
+                          <Smartphone className="w-3 h-3 opacity-70" />
+                          {req?.tester?.userDetail?.device_company ||
+                          req?.tester?.userDetail?.device_model
+                            ? (req?.tester?.userDetail?.device_company || "") +
+                              " " +
+                              (req?.tester?.userDetail?.device_model || "")
+                            : "N/A"}
+                        </Badge>
                       </TableCell>
                       <TableCell>
                         {showReadiness && req.partnerReadiness ? (
@@ -933,27 +1080,55 @@ export function TesterRequestsSection({
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="font-semibold text-sm">
-                        {req.tester?.name || "Unknown"}
-                      </span>
-                      {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span className="inline-flex items-center gap-0.5">
-                              <Badge
-                                variant="outline"
-                                className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
-                              >
-                                Pro
-                              </Badge>
-                              <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent side="top">
-                            <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
+                      <Avatar className="h-10 w-10 border border-border">
+                        <AvatarImage src={req.tester?.image || ""} />
+                        <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                          {req.tester?.name?.charAt(0) || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-semibold text-sm">
+                            {req.tester?.name || "Unknown"}
+                          </span>
+                          {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="inline-flex items-center gap-0.5">
+                                  <Badge
+                                    variant="outline"
+                                    className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                                  >
+                                    Pro
+                                  </Badge>
+                                  <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-[10px] font-bold">
+                            L{req.tester?.handshakeLevel ?? 1}
+                          </span>
+                          {req.tester?.eliteBadge ? (
+                            <EliteBadge size="xs" />
+                          ) : null}
+                          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                            <Smartphone className="w-3 h-3 opacity-70" />
+                            {req?.tester?.userDetail?.device_company ||
+                            req?.tester?.userDetail?.device_model
+                              ? (req?.tester?.userDetail?.device_company ||
+                                  "") +
+                                " " +
+                                (req?.tester?.userDetail?.device_model || "")
+                              : "N/A"}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                 <div className="flex items-center gap-1 flex-wrap justify-end">
                   {showReadiness && req.partnerReadiness ? (
@@ -990,6 +1165,32 @@ export function TesterRequestsSection({
                   </Badge>
                 </div>
                   </div>
+
+                  {req.offeredApp?.androidApp ? (
+                    <Link
+                      href={`/app/handshake-testing/${req.offeredApp.id}`}
+                      className="flex items-center gap-2 rounded-lg border bg-muted/30 p-2"
+                    >
+                      <div className="relative w-9 h-9 rounded-lg overflow-hidden bg-muted border border-border/40 flex-shrink-0">
+                        {req.offeredApp.androidApp.appLogoUrl ? (
+                          <SafeImage
+                            src={req.offeredApp.androidApp.appLogoUrl}
+                            alt={req.offeredApp.androidApp.appName}
+                            fill
+                            className="object-cover"
+                          />
+                        ) : null}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold truncate">
+                          {req.offeredApp.androidApp.appName}
+                        </p>
+                        <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                          Their handshake app
+                        </p>
+                      </div>
+                    </Link>
+                  ) : null}
 
                   <div className="flex items-center justify-center gap-1 flex-wrap">
                     {Array.from({ length: totalDay || 16 }, (_, i) => {
@@ -1045,6 +1246,8 @@ export function TesterRequestsSection({
               </div>
             )}
           </div>
+            </>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -1426,6 +1629,19 @@ export function TesterRequestsSection({
                     </div>
                   </div>
                 </div>
+
+                {/* Tester's Remark */}
+                {selectedVerification?.remark && (
+                  <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl space-y-2">
+                    <h5 className="text-sm font-bold text-blue-600 dark:text-blue-400 flex items-center gap-2">
+                      <MessageSquareText className="w-4 h-4" /> Tester&apos;s
+                      Remark
+                    </h5>
+                    <p className="text-xs text-foreground/80 leading-relaxed">
+                      {selectedVerification.remark}
+                    </p>
+                  </div>
+                )}
 
                 {/* Security Metadata */}
                 <div className="space-y-3">

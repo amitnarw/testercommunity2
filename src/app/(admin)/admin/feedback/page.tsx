@@ -186,7 +186,7 @@ function FeedbackContent() {
           ))}
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {["ALL", "PAID", "FREE"].map((appType) => (
+          {["ALL", "PAID", "HANDSHAKE"].map((appType) => (
             <Button
               key={appType}
               variant={appTypeFilter === appType ? "default" : "outline"}

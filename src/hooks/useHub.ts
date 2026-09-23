@@ -16,6 +16,7 @@ import {
   submitDailyVerification,
   completeHostedApp,
   startHubAppTesting,
+  requestStartTestingHubApp,
   validatePromoCode,
   resubmitHubApp,
 } from "@/lib/apiCalls";
@@ -294,6 +295,7 @@ export function useSubmitDailyVerification(
     mutationFn: (payload: {
       hubId: number | string;
       proofImage: string;
+      remark?: string;
       metaData?: any;
     }) => submitDailyVerification(payload),
     onSuccess: (data, variables, ctx) => {
@@ -354,6 +356,31 @@ export function useStartHubAppTesting(
     },
     onError: (data, variables, ctx) => {
       console.log("Testing start failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
+    },
+  });
+
+  return mutation;
+}
+
+export function useRequestStartTesting(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (payload: { appId: number | string }) =>
+      requestStartTestingHubApp(payload),
+    onSuccess: (data, variables, ctx) => {
+      console.log("Start request sent successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      console.log("Start request failed: " + data);
       (options as any)?.onError?.(data, variables, ctx);
     },
   });

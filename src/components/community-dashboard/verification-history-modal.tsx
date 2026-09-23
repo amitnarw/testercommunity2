@@ -26,6 +26,7 @@ export interface VerificationData {
   id: number;
   dayNumber: number;
   proofImageUrl: string;
+  remark?: string | null;
   status: "PENDING" | "VERIFIED" | "REJECTED";
   verifiedAt: string; // Date string
   rejectionReason?: string;
@@ -136,6 +137,20 @@ export function VerificationHistoryModal({
                   </div>
                 </div>
               </div>
+
+              {/* Tester Remark */}
+              {data.remark && (
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                    Tester Remark
+                  </h4>
+                  <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+                    <p className="text-xs text-foreground/80 leading-relaxed">
+                      {data.remark}
+                    </p>
+                  </div>
+                </div>
+              )}
 
               {/* Anti-Cheat Metadata */}
               <div className="space-y-3">

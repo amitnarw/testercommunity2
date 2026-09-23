@@ -25,19 +25,31 @@ import {
   Eye,
   Handshake,
   RotateCcw,
+  Trash2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
-import { useUpdateProjectStatus } from "@/hooks/useAdmin";
+import { useUpdateProjectStatus, useDeleteHandshakeSubmission } from "@/hooks/useAdmin";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import DeveloperInstructions from "@/components/developerInstructions";
 import { AdminAssignedTestersTable } from "@/components/admin/admin-assigned-testers-table";
+import { AdminStartRequestActions } from "@/components/admin/admin-start-request-actions";
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 import { AdminReviewsList } from "@/components/admin/admin-reviews-list";
 
@@ -116,8 +128,10 @@ export default function AdminSubmissionDetailPage({
   const [showForceHandshakeDialog, setShowForceHandshakeDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showRestartDialog, setShowRestartDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { mutate: updateStatus } = useUpdateProjectStatus({
     onSuccess: () => {
@@ -132,6 +146,17 @@ export default function AdminSubmissionDetailPage({
       });
     },
     onSettled: () => setIsUpdatingStatus(false),
+  });
+
+  const { mutate: deleteHandshakeSubmission } = useDeleteHandshakeSubmission({
+    onSuccess: () => {
+      toast({ title: "Deleted", description: "Handshake submission deleted successfully." });
+      router.push("/admin/submissions-free");
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err?.message || "Failed to delete.", variant: "destructive" });
+    },
+    onSettled: () => setIsDeleting(false),
   });
 
   const handleMoveToReview = () => {
@@ -255,9 +280,11 @@ export default function AdminSubmissionDetailPage({
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="pt-2 pb-4 pl-0 xl:pl-4">
-          <BackButton href="/admin/submissions-free" />
-        </div>
+        <PageHeader
+          title=""
+          backHref="/admin/submissions-free"
+          className="pl-0 xl:pl-4"
+        />
 
         <main className="max-w-7xl mx-auto flex flex-col gap-8 mt-2">
           {/* Header Action Card - THE MOST CRITICAL BUTTONS & APP STATUS */}
@@ -301,7 +328,9 @@ export default function AdminSubmissionDetailPage({
                             project.status === "COMPLETED" ||
                             project.status === "UNDER_ADMIN_REVIEW"
                               ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
-                              : "font-bold"
+                              : project.status === "START_REQUESTED"
+                                ? "bg-amber-500/15 text-amber-700 dark:text-amber-400 font-bold border-amber-500/30"
+                                : "font-bold"
                           }
                         >
                           {project.status.replace("_", " ")}
@@ -342,17 +371,13 @@ export default function AdminSubmissionDetailPage({
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {/* F-8: the edit endpoint hard-rejects FREE campaigns — hide
-                    the button instead of letting every save fail with 400. */}
-                {project.appType !== "FREE" && (
-                  <Button
-                    variant="outline"
-                    onClick={() => setShowEditDialog(true)}
-                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-blue-500/30 hover:border-blue-500/60 text-blue-600 bg-blue-500/5"
-                  >
-                    <Pencil className="w-4 h-4 mr-1.5" /> Edit
-                  </Button>
-                )}
+                <Button
+                  variant="outline"
+                  onClick={() => setShowEditDialog(true)}
+                  className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-blue-500/30 hover:border-blue-500/60 text-blue-600 bg-blue-500/5"
+                >
+                  <Pencil className="w-4 h-4 mr-1.5" /> Edit
+                </Button>
 
                 {(project.status === "IN_REVIEW" ||
                   project.status === "REJECTED" ||
@@ -397,6 +422,7 @@ export default function AdminSubmissionDetailPage({
                 )}
 
                 {(project.status === "AVAILABLE" ||
+                  project.status === "START_REQUESTED" ||
                   project.status === "IN_TESTING" ||
                   project.status === "TESTING_ACTIVE") && (
                   <Button
@@ -410,10 +436,12 @@ export default function AdminSubmissionDetailPage({
 
                 {/* S12: force-pair this campaign with another HANDSHAKE
                     campaign so testing can start immediately (skips the 24h
-                    partner wait). AVAILABLE only , once testing is running
-                    the partner section + Assign Testers cover further needs. */}
+                    partner wait). AVAILABLE or START_REQUESTED (still
+                    recruiting) — once testing is running the partner section
+                    + Assign Testers cover further needs. */}
                 {project.appType === "HANDSHAKE" &&
-                  project.status === "AVAILABLE" && (
+                  (project.status === "AVAILABLE" ||
+                    project.status === "START_REQUESTED") && (
                     <Button
                       onClick={() => setShowForceHandshakeDialog(true)}
                       className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
@@ -462,9 +490,57 @@ export default function AdminSubmissionDetailPage({
                       Reopen Testing
                   </Button>
                 )}
+
+                {/* Permanent delete for HANDSHAKE campaigns, any state.
+                    Gated to super_admin (canDelete) at the API layer. */}
+                {project.appType === "HANDSHAKE" && (
+                  <Button
+                    variant="destructive"
+                    onClick={() => setShowDeleteDialog(true)}
+                    disabled={isDeleting}
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
+                  >
+                    {isDeleting ? (
+                      <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4 mr-1.5" />
+                    )}
+                    Delete
+                  </Button>
+                )}
               </div>
             </div>
           </div>
+
+          {/* Start request banner — below the header section */}
+          {project.status === "START_REQUESTED" && (
+            <Card className="border-amber-500/30 shadow-sm bg-amber-500/5 relative overflow-hidden rounded-3xl">
+              <div className="absolute top-0 left-0 w-2 h-full bg-amber-500" />
+              <CardContent className="p-5 md:p-6 pl-7 md:pl-8">
+                <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <Clock className="w-5 h-5 text-amber-600 shrink-0" />
+                    <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+                      Start request pending approval —{" "}
+                      {project.currentTester || 0} of{" "}
+                      {project.totalTester || 0} testers joined.
+                    </p>
+                  </div>
+                  <AdminStartRequestActions
+                    campaignId={project.id}
+                    size="default"
+                    onSuccess={() => refetch()}
+                    className="flex flex-wrap items-center gap-3 shrink-0"
+                    summary={{
+                      currentTester: project.currentTester || 0,
+                      totalTester: project.totalTester || 0,
+                      totalDay: project.totalDay || 16,
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
             {/* APP IDENTITY & DETAILS */}
@@ -929,6 +1005,7 @@ export default function AdminSubmissionDetailPage({
 
           {/* Assigned Testers Section */}
           {(project.status === "AVAILABLE" ||
+            project.status === "START_REQUESTED" ||
             project.status === "IN_TESTING" ||
             project.status === "COMPLETED" ||
             project.status === "TESTING_ACTIVE" ||
@@ -939,7 +1016,7 @@ export default function AdminSubmissionDetailPage({
                 appId={project.id}
                 totalDays={project.totalDay || 14}
                 onRefetch={refetch}
-                appType="FREE"
+                appType="HANDSHAKE"
               />
             </div>
           )}
@@ -1057,6 +1134,33 @@ export default function AdminSubmissionDetailPage({
         onOpenChange={setShowRestartDialog}
         onSuccess={() => refetch()}
       />
+      {/* ── Delete Confirmation Dialog ── */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent className="w-[90vw] sm:max-w-[425px] rounded-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Handshake Submission</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this handshake submission and all its
+              associated data (feedback, tester relations, verifications,
+              handshake links, requests, etc.). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={() => {
+                setIsDeleting(true);
+                deleteHandshakeSubmission(project.id);
+              }}
+              disabled={isDeleting}
+            >
+              {isDeleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (
         <div

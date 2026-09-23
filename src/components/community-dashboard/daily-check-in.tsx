@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
 import { motion, AnimatePresence } from "framer-motion";
 import { useR2 } from "@/hooks/useR2";
 import { useSubmitDailyVerification } from "@/hooks/useHub";
@@ -78,6 +79,11 @@ export function DailyTestingAction({
   const [uploadPercent, setUploadPercent] = useState(0);
   const [proofImage, setProofImage] = useState<string | null>(null);
   const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
+
+  // Mandatory tester remark: what was done in the app today.
+  const REMARK_MIN_LENGTH = 10;
+  const [remark, setRemark] = useState("");
+  const remarkValid = remark.trim().length >= REMARK_MIN_LENGTH;
 
   // Verification state
   const [verificationStepIndex, setVerificationStepIndex] = useState(0);
@@ -155,6 +161,18 @@ export function DailyTestingAction({
       const file = acceptedFiles[0];
       if (!file) return;
 
+      // Remark is mandatory — block the upload until it is provided so the
+      // user can't submit a proof without describing what they tested.
+      if (remark.trim().length < REMARK_MIN_LENGTH) {
+        toast({
+          title: "Remark required",
+          description: `Please describe what you did in the app today (at least ${REMARK_MIN_LENGTH} characters) before uploading your screenshot.`,
+          variant: "destructive",
+        });
+        setStep(1);
+        return;
+      }
+
       // Create local preview immediately
       const previewUrl = URL.createObjectURL(file);
       setLocalPreviewUrl(previewUrl);
@@ -230,6 +248,7 @@ export function DailyTestingAction({
           submitVerification.mutateAsync({
             hubId: appId,
             proofImage: uploadedUrl,
+            remark: remark.trim(),
             metaData: {
               timestamp: Date.now(),
               userAgent: navigator.userAgent,
@@ -266,6 +285,7 @@ export function DailyTestingAction({
       uploadFileToR2,
       submitVerification,
       toast,
+      remark,
       onCheckIn,
       resetAndRetry,
     ],
@@ -557,11 +577,13 @@ export function DailyTestingAction({
                             Instructions
                           </h4>
                           <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-sm">
-                            1. Download & Open the app.
-                            <br />
-                            2. Take a screenshot of the home screen.
-                            <br />
-                            3. Upload it here to verify your daily activity.
+                             1. Download & Open the app.
+                             <br />
+                             2. Take a screenshot of the home screen.
+                             <br />
+                             3. Write a short remark about what you did.
+                             <br />
+                             4. Upload it here to verify your daily activity.
                           </p>
                         </div>
                         <Button
@@ -576,10 +598,48 @@ export function DailyTestingAction({
 
                     {step === 1 && (
                       <div className="h-full flex flex-col pb-4">
+                        <div className="space-y-2 mb-4">
+                          <label
+                            htmlFor="daily-remark"
+                            className="text-sm font-bold text-slate-900 dark:text-white flex items-center justify-between"
+                          >
+                            <span>
+                              What did you do in the app today?{" "}
+                              <span className="text-red-500">*</span>
+                            </span>
+                            <span
+                              className={cn(
+                                "text-[11px] font-medium",
+                                remarkValid
+                                  ? "text-emerald-600 dark:text-emerald-400"
+                                  : "text-slate-400",
+                              )}
+                            >
+                              {remark.trim().length}/{REMARK_MIN_LENGTH} min
+                            </span>
+                          </label>
+                          <Textarea
+                            id="daily-remark"
+                            placeholder="e.g. Explored the home feed, created a new post, and checked notifications for crashes…"
+                            className="min-h-[90px] text-sm resize-none rounded-xl"
+                            value={remark}
+                            onChange={(e) => setRemark(e.target.value)}
+                          />
+                          {!remarkValid && (
+                            <p className="text-xs text-amber-600 dark:text-amber-400 font-medium">
+                              A short remark is compulsory — write at least{" "}
+                              {REMARK_MIN_LENGTH} characters before uploading
+                              your screenshot.
+                            </p>
+                          )}
+                        </div>
                         <div
                           {...getRootProps()}
                           className={cn(
-                            "flex-1 border-2 border-dashed rounded-2xl transition-all duration-300 group cursor-pointer relative overflow-hidden bg-slate-50 dark:bg-zinc-900/50 min-h-[220px] flex flex-col justify-center",
+                            "flex-1 border-2 border-dashed rounded-2xl transition-all duration-300 group relative overflow-hidden bg-slate-50 dark:bg-zinc-900/50 min-h-[220px] flex flex-col justify-center",
+                            remarkValid
+                              ? "cursor-pointer"
+                              : "cursor-not-allowed opacity-60",
                             isDragActive
                               ? "border-blue-500 bg-blue-50/50 dark:bg-blue-900/10"
                               : "border-slate-200 dark:border-zinc-800 hover:border-blue-400 hover:bg-white dark:hover:bg-zinc-900",

@@ -20,6 +20,10 @@ import type { HandshakeRequest } from "@/lib/types";
 interface IncomingRequestsSectionProps {
   items: HandshakeRequest[];
   isLoading: boolean;
+  /** Compact strip mode: single-column tighter list (used inside My Apps). */
+  compact?: boolean;
+  /** When true, render nothing instead of the empty state. */
+  hideWhenEmpty?: boolean;
 }
 
 function formatTimeLeft(expiresAt: string): string {
@@ -31,7 +35,12 @@ function formatTimeLeft(expiresAt: string): string {
   return `${hours}h left`;
 }
 
-export function IncomingRequestsSection({ items, isLoading }: IncomingRequestsSectionProps) {
+export function IncomingRequestsSection({
+  items,
+  isLoading,
+  compact = false,
+  hideWhenEmpty = false,
+}: IncomingRequestsSectionProps) {
   const router = useRouter();
   const [rejectingId, setRejectingId] = useState<number | null>(null);
   const [reason, setReason] = useState("");
@@ -99,6 +108,7 @@ export function IncomingRequestsSection({ items, isLoading }: IncomingRequestsSe
   }
 
   if (!items || items.length === 0) {
+    if (hideWhenEmpty) return null;
     return (
       <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
         No incoming handshake requests.
@@ -108,7 +118,13 @@ export function IncomingRequestsSection({ items, isLoading }: IncomingRequestsSe
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div
+        className={
+          compact
+            ? "grid grid-cols-1 gap-2"
+            : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"
+        }
+      >
         <AnimatePresence>
           {items.map((req) => {
             const offeredApp = req.offeredApp ?? null;

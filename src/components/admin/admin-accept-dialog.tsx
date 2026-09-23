@@ -36,7 +36,7 @@ interface AdminAcceptDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
-  appType?: "PAID" | "FREE" | string;
+  appType?: "PAID" | "HANDSHAKE" | string;
   paymentInfo?: {
     amountPaid: number;
     currency: string;

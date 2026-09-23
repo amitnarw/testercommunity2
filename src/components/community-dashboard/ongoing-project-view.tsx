@@ -244,6 +244,7 @@ export default function OngoingProjectView({
         id: verification.id,
         dayNumber: verification.dayNumber,
         proofImageUrl: verification.proofImageUrl,
+        remark: verification.remark ?? undefined,
         status: verification.status,
         verifiedAt: verification.verifiedAt,
         rejectionReason: verification.rejectionReason || undefined,

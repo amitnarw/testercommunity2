@@ -45,7 +45,7 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails, useCompleteHostedApp, useResubmitHubApp, useAppCategories, useStartHubAppTesting } from "@/hooks/useHub";
+import { useSingleHubAppDetails, useCompleteHostedApp } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
 import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
@@ -92,6 +92,11 @@ const getStatusConfig = (status: string) => {
         icon: <XCircle className="w-5 h-5" />,
       };
     case "AVAILABLE":
+      return {
+        badgeVariant: "secondary",
+        icon: <Clock className="w-5 h-5" />,
+      };
+    case "START_REQUESTED":
       return {
         badgeVariant: "secondary",
         icon: <Clock className="w-5 h-5" />,
@@ -316,7 +321,9 @@ function SubmissionDetailsContent({ id }: { id: string }) {
     } else {
       params.set("tab", newTab);
     }
-    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`, {
+    // replace (not push): tab switches must not pollute history, so the
+    // Back button leaves the page directly like a browser back.
+    router.replace(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`, {
       scroll: false,
     });
   };
@@ -419,10 +426,6 @@ function SubmissionDetailsContent({ id }: { id: string }) {
     totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
   };
 
-  const testersCount = appDetails?.testerRelations?.length ?? 0;
-  const feedbackCount = isUnderReviewOrRejected
-    ? 0
-    : appDetails?.feedback?.length ?? 0;
   const showInstructionsTab = !!appDetails?.instructionsForTester;
   const showTestersTab =
     appDetails?.status === "AVAILABLE" ||
@@ -442,14 +445,12 @@ function SubmissionDetailsContent({ id }: { id: string }) {
     {
       label: "Testers",
       value: "testers",
-      count: testersCount,
       icon: Users,
       description: "Manage testers",
     },
     {
       label: "Feedback",
       value: "feedback",
-      count: feedbackCount,
       icon: MessageSquare,
       description: "Tester feedback log",
     },
@@ -464,7 +465,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
   }
 
   return (
-    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative mb-8 overflow-x-hidden">
+    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative mb-8 overflow-x-clip">
       <div
         ref={confettiTriggerRef}
         className="absolute top-0 left-1/2 -translate-x-1/2"
@@ -489,7 +490,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
         <main className="max-w-7xl mx-auto space-y-8">
           <PageHeader
             title=""
-            backHref="/app/handshake-testing/my-submissions"
+            backHref="/app/handshake-testing?tab=submissions"
             className="pl-0"
           />
 
@@ -622,6 +623,23 @@ function SubmissionDetailsContent({ id }: { id: string }) {
                 </motion.section>
               )}
 
+              {appDetails?.status === "AVAILABLE" &&
+                appDetails?.statusDetails?.title === "Start request rejected" && (
+                  <div className="bg-gradient-to-r from-red-50/60 to-rose-50/60 dark:from-red-950/20 dark:to-rose-950/20 border border-red-200 dark:border-red-900/40 rounded-2xl p-5 flex items-center gap-3 shadow-sm">
+                    <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
+                      <XCircle className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-bold text-sm text-foreground">
+                        Start request rejected by admin
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        {appDetails?.statusDetails?.description}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
               {appDetails?.status === "AVAILABLE" && (
                 <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/10 dark:to-indigo-950/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
                   <div className="flex items-center gap-3">
@@ -630,19 +648,42 @@ function SubmissionDetailsContent({ id }: { id: string }) {
                     </div>
                     <div className="text-left">
                       <h4 className="font-bold text-sm text-foreground">
-                        Start testing early?
+                        Request to start testing?
                       </h4>
                       <p className="text-xs text-muted-foreground">
-                        You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 16}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
+                        You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 16}</span> testers. Send a request to admin to start the {appDetails.totalDay || 16}-day testing period.
                       </p>
+                      {(appDetails.currentTester || 0) < 12 && (
+                        <p className="text-xs font-medium text-red-600 dark:text-red-500 mt-1">
+                          12 Handshake Required for Request to Start Testing if 12 testers not joined yet
+                        </p>
+                      )}
                     </div>
                   </div>
                   <Button
                     onClick={() => setIsStartTestingModalOpen(true)}
                     className="w-full sm:w-auto px-6 py-3 h-auto bg-emerald-500 hover:bg-emerald-500/90 text-white font-semibold rounded-2xl shadow-md transition-all shrink-0"
                   >
-                    Start Testing Now
+                    Request to Start Testing
                   </Button>
+                </div>
+              )}
+
+                            {appDetails?.status === "START_REQUESTED" && (
+                <div className="bg-gradient-to-r from-amber-50/60 to-yellow-50/60 dark:from-amber-950/20 dark:to-yellow-950/20 border border-amber-200 dark:border-amber-900/40 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0">
+                      <Clock className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-bold text-sm text-foreground">
+                        Start request pending admin approval
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        Your request to start testing with <span className="font-semibold text-amber-600">{appDetails.currentTester || 0}</span> testers joined has been sent to admin. Testing will begin once it is approved.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               )}
 
@@ -818,6 +859,7 @@ function SubmissionDetailsContent({ id }: { id: string }) {
                     refetch={appDetailsRefetch}
                     totalDay={appDetails?.totalDay}
                     campaignStatus={appDetails?.status}
+                    ownerDailyGate={appDetails?.ownerDailyGate}
                   />
                 </TabsContent>
               )}

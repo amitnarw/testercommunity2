@@ -17,6 +17,16 @@ interface OutgoingRequestsSectionProps {
   isLoading: boolean;
   showHistory: boolean;
   onToggleHistory: () => void;
+  /** Compact strip mode: single-column tighter list (used inside Discover). */
+  compact?: boolean;
+  /** When true, render nothing instead of the empty state. */
+  hideWhenEmpty?: boolean;
+  /**
+   * Split-view mode for the Discover sub-tab pills. "pending" renders only
+   * the active grid, "history" only the past-requests grid (no expander).
+   * Defaults to "all" (legacy combined behaviour).
+   */
+  view?: "all" | "pending" | "history";
 }
 
 // S12: only PENDING is an active request. ACCEPTED/MUTUAL_MATCHED move to the
@@ -49,6 +59,9 @@ export function OutgoingRequestsSection({
   isLoading,
   showHistory,
   onToggleHistory,
+  compact = false,
+  hideWhenEmpty = false,
+  view = "all",
 }: OutgoingRequestsSectionProps) {
   const cancelMutation = useCancelHandshakeRequest();
   const { toast } = useToast();
@@ -92,6 +105,7 @@ export function OutgoingRequestsSection({
   }
 
   if (items.length === 0) {
+    if (hideWhenEmpty) return null;
     return (
       <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
         No outgoing handshake requests.
@@ -236,34 +250,54 @@ export function OutgoingRequestsSection({
     );
   };
 
+  const listClassName = compact
+    ? "grid grid-cols-1 gap-2"
+    : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3";
+
+  const showPending = view !== "history";
+  const showPast = view !== "pending";
+
+  // Split views skip the expander entirely: each pill owns its grid.
+  const pastExpanded = view === "history" ? true : showHistory;
+
   return (
     <div className="space-y-4">
-      {activeItems.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
-          No pending outgoing handshake requests.
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          <AnimatePresence>
-            {activeItems.map((req) => renderCard(req))}
-          </AnimatePresence>
-        </div>
-      )}
+      {showPending &&
+        (activeItems.length === 0 ? (
+          <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
+            No pending outgoing handshake requests.
+          </div>
+        ) : (
+          <div className={listClassName}>
+            <AnimatePresence>
+              {activeItems.map((req) => renderCard(req))}
+            </AnimatePresence>
+          </div>
+        ))}
 
-      {historyItems.length > 0 && (
-        <div className="space-y-2">
-          <button
-            type="button"
-            onClick={onToggleHistory}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <History className="w-3.5 h-3.5" />
-            {showHistory
-              ? "Hide past requests"
-              : `Show past requests (${historyItems.length})`}
-          </button>
+      {showPast &&
+        (historyItems.length === 0 ? (
+          view === "history" ? (
+            <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-sm text-muted-foreground">
+              No past requests.
+            </div>
+          ) : null
+        ) : (
+          <div className="space-y-2">
+          {view === "all" && (
+            <button
+              type="button"
+              onClick={onToggleHistory}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <History className="w-3.5 h-3.5" />
+              {showHistory
+                ? "Hide past requests"
+                : `Show past requests (${historyItems.length})`}
+            </button>
+          )}
           <AnimatePresence>
-            {showHistory && (
+            {pastExpanded && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
@@ -274,15 +308,15 @@ export function OutgoingRequestsSection({
                   <p className="text-[10px] uppercase tracking-wide text-muted-foreground/70 mb-2">
                     Past
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 opacity-70">
+                  <div className={`${listClassName} opacity-70`}>
                     {historyItems.map((req) => renderCard(req))}
                   </div>
                 </div>
               </motion.div>
             )}
-          </AnimatePresence>
-        </div>
-      )}
+            </AnimatePresence>
+          </div>
+        ))}
     </div>
   );
 }

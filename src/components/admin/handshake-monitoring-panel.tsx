@@ -14,7 +14,9 @@ import {
   useRecentMissedDays,
   useAdminReplaceTester,
   useAdminForceHandshake,
+  useStartRequests,
 } from "@/hooks/useHandshakeMonitoring";
+import { AdminStartRequestActions } from "@/components/admin/admin-start-request-actions";
 import { useAssignPenaltyApp } from "@/hooks/usePenalty";
 import { useSubmittedApps } from "@/hooks/useAdmin";
 import { useToast } from "@/hooks/use-toast";
@@ -27,6 +29,7 @@ import {
 } from "@/components/ui/select";
 import type {
   HubSubmittedAppResponse,
+  StartRequestCampaign,
   WaitingCampaign,
 } from "@/lib/types";
 
@@ -38,12 +41,16 @@ export default function HandshakeMonitoringPanel() {
       <Tabs defaultValue="waiting" className="space-y-4">
         <TabsList>
           <TabsTrigger value="waiting">Waiting</TabsTrigger>
+          <TabsTrigger value="start-requests">Start Requests</TabsTrigger>
           <TabsTrigger value="penalized">Penalized</TabsTrigger>
           <TabsTrigger value="missed-days">Missed days</TabsTrigger>
         </TabsList>
 
         <TabsContent value="waiting">
           <WaitingTab />
+        </TabsContent>
+        <TabsContent value="start-requests">
+          <StartRequestsTab />
         </TabsContent>
         <TabsContent value="penalized">
           <PenalizedTab />
@@ -108,6 +115,23 @@ function OverviewCards() {
             <p className="text-xs">Pending requests</p>
           </div>
           <p className="text-2xl font-bold mt-2">{data.pendingRequests}</p>
+        </CardContent>
+      </Card>
+      <Card
+        className={
+          (data.pendingStartRequests ?? 0) > 0 ? "border-emerald-500/30" : ""
+        }
+      >
+        <CardContent className="p-4">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <AlertCircle className="w-4 h-4" />
+            <p className="text-xs">Start requests</p>
+          </div>
+          <p
+            className={`text-2xl font-bold mt-2 ${(data.pendingStartRequests ?? 0) > 0 ? "text-emerald-500" : ""}`}
+          >
+            {data.pendingStartRequests ?? 0}
+          </p>
         </CardContent>
       </Card>
     </div>
@@ -283,6 +307,82 @@ function WaitingCampaignRow({ campaign }: { campaign: WaitingCampaign }) {
             Force handshake
           </Button>
         </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function StartRequestsTab() {
+  const { data, isLoading } = useStartRequests();
+  if (isLoading) {
+    return [1, 2].map((i) => <Skeleton key={i} className="h-24 rounded-xl" />);
+  }
+  const items = data?.items ?? [];
+  if (items.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-8 text-center text-sm text-muted-foreground">
+          No pending start requests.
+        </CardContent>
+      </Card>
+    );
+  }
+  return (
+    <div className="space-y-2">
+      {items.map((c) => (
+        <StartRequestRow key={c.id} campaign={c} />
+      ))}
+    </div>
+  );
+}
+
+function StartRequestRow({ campaign }: { campaign: StartRequestCampaign }) {
+  return (
+    <Card>
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 min-w-0">
+            <p className="font-semibold truncate">
+              {campaign.androidApp?.appName || `Campaign #${campaign.id}`}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Owner: {campaign.appOwner?.name || campaign.appOwnerId}
+              {typeof campaign.appOwner?.handshakeLevel === "number" && (
+                <> · L{campaign.appOwner.handshakeLevel}</>
+              )}
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {campaign.currentTester ?? 0}/{campaign.totalTester ?? 0}{" "}
+              testers joined · requested{" "}
+              {campaign.updatedAt
+                ? new Date(campaign.updatedAt).toLocaleString()
+                : "?"}
+            </p>
+          </div>
+          <Badge
+            variant="outline"
+            className="bg-amber-500/15 text-amber-600 border-amber-500/30 shrink-0"
+          >
+            Start requested
+          </Badge>
+        </div>
+
+        <AdminStartRequestActions
+          campaignId={campaign.id}
+          summary={{
+            currentTester: campaign.currentTester ?? 0,
+            totalTester: campaign.totalTester ?? 0,
+            totalDay: campaign.totalDay ?? 16,
+          }}
+          leading={
+            <a
+              href={`/admin/submissions-free/${campaign.id}`}
+              className="text-xs font-semibold text-primary hover:underline sm:mr-auto"
+            >
+              Open campaign #{campaign.id} →
+            </a>
+          }
+        />
       </CardContent>
     </Card>
   );

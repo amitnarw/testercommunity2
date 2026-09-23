@@ -22,6 +22,9 @@ const nextConfig: NextConfig = {
       // moved to /profile , preserve old bookmarks.
       { source: "/app/handshake-testing/my-tasks", destination: "/app/handshake-testing", permanent: true },
       { source: "/app/handshake-testing/elite-badge", destination: "/profile#elite-badge", permanent: true },
+      // My Submissions list page folded into the hub's first tab; the
+      // my-submissions/[id] detail route is untouched by this exact-match source.
+      { source: "/app/handshake-testing/my-submissions", destination: "/app/handshake-testing?tab=submissions", permanent: true },
     ];
   },
   typescript: {

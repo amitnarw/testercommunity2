@@ -9,8 +9,11 @@ import {
   PlayCircle,
   Clipboard,
   Check,
+  Loader2,
+  Package,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { SafeImage } from "@/components/safe-image";
 import {
   Accordion,
@@ -18,11 +21,20 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { IconRain } from "@/components/icon-rain";
 import { PageHeader } from "@/components/page-header";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { getPublicStats } from "@/lib/apiCalls";
+import { useUserWallet } from "@/hooks/useUserWallet";
 import { toYouTubeEmbedUrl } from "@/lib/youtube";
 
 const DEFAULT_PRO_TESTING_VIDEO_EMBED =
@@ -87,6 +99,20 @@ export default function AddAppGuidePage() {
   const [videoEmbedUrl, setVideoEmbedUrl] = useState<string>(
     DEFAULT_PRO_TESTING_VIDEO_EMBED,
   );
+  const [showPackageModal, setShowPackageModal] = useState(false);
+
+  const router = useRouter();
+  const { data: walletData, isLoading: isWalletLoading } = useUserWallet();
+  const hasPackage = (walletData?.totalPackages ?? 0) >= 1;
+
+  const handleGetStarted = () => {
+    if (isWalletLoading) return;
+    if (hasPackage) {
+      router.push("/app/pro-testing/add-app/form");
+    } else {
+      setShowPackageModal(true);
+    }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -466,16 +492,54 @@ export default function AddAppGuidePage() {
               </Accordion>
 
               <div className="pt-6 flex justify-end">
-                <Button asChild size="lg">
-                  <Link href="/app/pro-testing/add-app/form">
-                    Get Started <ArrowRight className="ml-2" />
-                  </Link>
+                <Button
+                  size="lg"
+                  onClick={handleGetStarted}
+                  disabled={isWalletLoading}
+                >
+                  {isWalletLoading ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  {isWalletLoading ? "Loading..." : "Get Started"}
+                  {!isWalletLoading && <ArrowRight className="ml-2" />}
                 </Button>
               </div>
             </div>
           </main>
         </div>
       </div>
+      <Dialog open={showPackageModal} onOpenChange={setShowPackageModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <div className="mx-auto sm:mx-0 mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Package className="h-6 w-6 text-primary" />
+            </div>
+            <DialogTitle>Pro Testing Package Required</DialogTitle>
+            <DialogDescription>
+              You need at least 1 Pro Testing package to submit your app.
+              Purchase a package from the billing page and come back to submit
+              your app for testing.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              variant="ghost"
+              onClick={() => setShowPackageModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button asChild>
+              <Link
+                href={ROUTES.AUTHENTICATED.BILLING}
+                onClick={() => setShowPackageModal(false)}
+              >
+                Purchase Package
+                <ArrowRight className="ml-2" />
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {fullscreenImage && (
         <div
           className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"

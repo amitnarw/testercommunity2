@@ -4,10 +4,9 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, LayoutPanelLeft, Activity, Handshake } from "lucide-react";
+import { PlusCircle, Activity, Handshake, LayoutPanelLeft } from "lucide-react";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
-import { Badge } from "@/components/ui/badge";
 import {
   useHubAppsCount,
   useHubData,
@@ -15,14 +14,10 @@ import {
   useHubApps,
 } from "@/hooks/useHub";
 import { ROUTES } from "@/lib/routes";
-import {
-  useIncomingHandshakeRequests,
-  useOutgoingHandshakeRequests,
-} from "@/hooks/useHandshakeRequests";
-import { AvailableDevelopersSection } from "@/components/handshake/available-developers-section";
-import { IncomingRequestsSection } from "@/components/handshake/incoming-requests-section";
-import { OutgoingRequestsSection } from "@/components/handshake/outgoing-requests-section";
-import { ExistingHandshakesSection } from "@/components/handshake/existing-handshakes-section";
+import { useIncomingHandshakeRequests, useOutgoingHandshakeRequests } from "@/hooks/useHandshakeRequests";
+import { DiscoverSection } from "@/components/handshake/discover-section";
+import { MyAppsSection } from "@/components/handshake/my-apps-section";
+import { ActivitySection } from "@/components/handshake/activity-section";
 import { useMyLevel } from "@/hooks/useLevel";
 import { StickyPageTitle } from "@/components/sticky-page-title";
 
@@ -40,34 +35,38 @@ const BentoCard = ({
   </div>
 );
 
+// Hub tabs: my-apps (my submissions) | discover (tester, default) | activity (requests + testing + history).
+// Legacy ?tab= values from the old 4-tab layout are mapped forward.
+const LEGACY_TAB_MAP: Record<string, string> = {
+  available: "discover",
+  submissions: "my-apps",
+  requests: "my-apps",
+  running: "activity",
+};
+const resolveTab = (raw: string | null) => {
+  if (!raw) return "discover";
+  return LEGACY_TAB_MAP[raw] ?? raw;
+};
+
 function CommunityDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
-  const [selectedTab, setSelectedTab] = useState(
-    searchParams.get("tab") || "available",
+  // Hub tabs: my-apps (my submissions) | discover (tester, default) | activity.
+  // Legacy ?tab= values from the old 4-tab layout are mapped forward.
+  const [selectedTab, setSelectedTab] = useState(() =>
+    resolveTab(searchParams.get("tab")),
   );
-  const [requestsSubTab, setRequestsSubTab] = useState<"incoming" | "outgoing">(
-    (searchParams.get("subtab") === "outgoing" ? "outgoing" : "incoming") as
-      | "incoming"
-      | "outgoing",
-  );
-  const [showOutgoingHistory, setShowOutgoingHistory] = useState(false);
 
   useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab) setSelectedTab(tab);
+    setSelectedTab(resolveTab(searchParams.get("tab")));
   }, [searchParams]);
 
-  const updateUrl = (newTab: string, newSubTab?: string) => {
+  const updateUrl = (newTab: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", newTab);
-    if (newSubTab) {
-      params.set("subtab", newSubTab);
-    } else {
-      params.delete("subtab");
-    }
+    params.delete("subtab");
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
@@ -76,34 +75,14 @@ function CommunityDashboardContent() {
     updateUrl(val);
   };
 
-  const handleRequestsSubTabChange = (val: string) => {
-    setRequestsSubTab(val === "outgoing" ? "outgoing" : "incoming");
-    updateUrl("requests", val);
-  };
-
   const { data: hubDataCount } = useHubAppsCount();
 
-  // v2 handshake request lists. S6-10: incoming is PENDING-only so the list,
-  // badge count, and action buttons all agree; outgoing keeps full history
-  // with per-status badges.
-  const { data: incoming, isLoading: incomingLoading } =
-    useIncomingHandshakeRequests({ status: "PENDING", limit: 20 });
-  const { data: outgoing, isLoading: outgoingLoading } =
-    useOutgoingHandshakeRequests({ limit: 20 });
-
-  // S7-9: cheap PENDING-only outgoing count so the Requests badge reflects
-  // actionable items symmetrically with Incoming (the full-history list
-  // above still shows every status).
-  const { data: pendingOutgoing } = useOutgoingHandshakeRequests({
+  // Cheap PENDING-only incoming count for the Requests bento tile.
+  const { data: pendingIncoming } = useIncomingHandshakeRequests({
     status: "PENDING",
     limit: 1,
   });
-
-  // S6-10/S7-9: derive the Requests tab / bento count from the v2 request
-  // tables (legacy relation-based counts never see HandshakeRequest rows).
-  const requestsCount =
-    (incoming?.pagination?.total ?? 0) +
-    (pendingOutgoing?.pagination?.total ?? 0);
+  const pendingCount = pendingIncoming?.pagination?.total ?? 0;
 
   // Running count = Active (in_testing) + Approved (accepted)
   const runningCount =
@@ -111,25 +90,22 @@ function CommunityDashboardContent() {
 
   const tabs = [
     {
-      label: "Available",
-      value: "available",
-      count: hubDataCount?.["AVAILABLE"] || 0,
+      label: "My Apps",
+      value: "my-apps",
+      icon: LayoutPanelLeft,
+      description: "Your submissions & their status",
+    },
+    {
+      label: "Discover",
+      value: "discover",
       icon: Activity,
       description: "Browse developers & send handshakes",
     },
     {
-      label: "Requests",
-      value: "requests",
-      count: requestsCount,
+      label: "Activity",
+      value: "activity",
       icon: Activity,
-      description: "Incoming & outgoing handshake requests",
-    },
-    {
-      label: "Running",
-      value: "running",
-      count: runningCount,
-      icon: Activity,
-      description: "Active tests & approved apps",
+      description: "Requests, active tests & history",
     },
   ];
 
@@ -143,17 +119,29 @@ function CommunityDashboardContent() {
 
   // S5a-2: real discovery data — other users' AVAILABLE handshake apps
   const { data: availableApps, isPending: availableIsPending } = useHubApps({
-    type: selectedTab === "available" ? "AVAILABLE" : "",
+    type: selectedTab === "discover" ? "AVAILABLE" : "",
   });
 
-  // Running: apps owned by others where this user has an ACTIVE relation
+  const isActivity = selectedTab === "activity";
+  // Activity → Testing now: apps owned by others where this user has an ACTIVE relation
   const { data: inTestingApps, isPending: inTestingPending } = useHubApps({
-    type: "IN_TESTING",
+    type: isActivity ? "IN_TESTING" : "",
   });
   const { data: approvedApps, isPending: approvedPending } = useHubApps({
-    type: "APPROVED",
+    type: isActivity ? "APPROVED" : "",
   });
   const runningApps = [...(approvedApps ?? []), ...(inTestingApps ?? [])];
+  // Activity → History: apps where the user completed testing
+  const { data: completedApps, isPending: completedPending } = useHubApps({
+    type: isActivity ? "COMPLETED" : "",
+  });
+  // Activity → Received / Sent requests
+  const { data: incoming, isLoading: incomingLoading } =
+    useIncomingHandshakeRequests(
+      isActivity ? { status: "PENDING", limit: 20 } : undefined,
+    );
+  const { data: outgoing, isLoading: outgoingLoading } =
+    useOutgoingHandshakeRequests(isActivity ? { limit: 20 } : undefined);
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
@@ -193,15 +181,16 @@ function CommunityDashboardContent() {
             </BentoCard>
 
             <div className="flex flex-row gap-2 col-span-2">
-              <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2">
+              <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2 !p-2 sm:!p-4">
                 <CardTitle className="text-sm font-medium flex items-center gap-2 relative z-10">
                   <Handshake className="absolute top-5 right-5 scale-[6] text-white/10 rotate-45 w-4 h-4" />
-                  Handshake Level
+                  <span className="hidden sm:block">Handshake Level</span>
+                  <span className="block sm:hidden">Handshake lvl</span>
                 </CardTitle>
                 <p className="text-3xl sm:text-5xl font-bold my-auto relative z-10">
                   {handshakeStats?.handshakeLevel ?? 0}
                 </p>
-                <p className="flex flex-row gap-2 text-xs text-white/80 relative z-10">
+                <p className="flex flex-col sm:flex-row gap-1 sm:gap-2 text-xs text-white/80 relative z-10">
                   <span className="bg-card/20 rounded-xl py-0.5 px-2">
                     {myLevel?.completedCount ?? 0} completed
                   </span>
@@ -222,7 +211,7 @@ function CommunityDashboardContent() {
                   </div>
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Requests</p>
-                    <p className="text-2xl font-bold">{requestsCount}</p>
+                    <p className="text-2xl font-bold">{pendingCount}</p>
                   </div>
                 </div>
               </BentoCard>
@@ -237,16 +226,6 @@ function CommunityDashboardContent() {
               >
                 <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
                 <p>Submit New App</p>
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-center h-full p-2 sm:p-auto"
-                onClick={() =>
-                  router.push(ROUTES.AUTHENTICATED.HANDSHAKE_MY_SUBMISSIONS)
-                }
-              >
-                <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
-                <p>My Submissions</p>
               </Button>
             </BentoCard>
           </div>
@@ -265,75 +244,27 @@ function CommunityDashboardContent() {
               className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
             />
 
-            <TabsContent value="available">
-              <AvailableDevelopersSection
+            <TabsContent value="my-apps">
+              <MyAppsSection />
+            </TabsContent>
+
+            <TabsContent value="discover">
+              <DiscoverSection
                 apps={availableApps ?? []}
                 isLoading={availableIsPending}
               />
             </TabsContent>
 
-            <TabsContent value="requests">
-              <div className="flex gap-2 mb-4">
-                <button
-                  type="button"
-                  onClick={() => handleRequestsSubTabChange("incoming")}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                    requestsSubTab === "incoming"
-                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
-                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
-                  }`}
-                >
-                  Incoming
-                  {(incoming?.pagination?.total ?? 0) > 0 && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 h-4 px-1 text-[10px]"
-                    >
-                      {incoming!.pagination.total}
-                    </Badge>
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleRequestsSubTabChange("outgoing")}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                    requestsSubTab === "outgoing"
-                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
-                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
-                  }`}
-                >
-                  Outgoing
-                  {/* S7-9: PENDING-only badge, symmetric with Incoming */}
-                  {(pendingOutgoing?.pagination?.total ?? 0) > 0 && (
-                    <Badge
-                      variant="secondary"
-                      className="ml-2 h-4 px-1 text-[10px]"
-                    >
-                      {pendingOutgoing!.pagination.total}
-                    </Badge>
-                  )}
-                </button>
-              </div>
-
-              {requestsSubTab === "incoming" ? (
-                <IncomingRequestsSection
-                  items={incoming?.items ?? []}
-                  isLoading={incomingLoading}
-                />
-              ) : (
-                <OutgoingRequestsSection
-                  items={outgoing?.items ?? []}
-                  isLoading={outgoingLoading}
-                  showHistory={showOutgoingHistory}
-                  onToggleHistory={() => setShowOutgoingHistory((v) => !v)}
-                />
-              )}
-            </TabsContent>
-
-            <TabsContent value="running">
-              <ExistingHandshakesSection
-                apps={runningApps}
-                isLoading={inTestingPending || approvedPending}
+            <TabsContent value="activity">
+              <ActivitySection
+                incoming={incoming?.items ?? []}
+                incomingLoading={incomingLoading}
+                outgoing={outgoing?.items ?? []}
+                outgoingLoading={outgoingLoading}
+                testing={runningApps}
+                testingLoading={inTestingPending || approvedPending}
+                history={completedApps ?? []}
+                historyLoading={completedPending}
               />
             </TabsContent>
           </Tabs>

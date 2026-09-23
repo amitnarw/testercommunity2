@@ -67,7 +67,7 @@ export function useDashboardSummary() {
 
   const allActiveApps = useMemo(() => [
     ...(dashActiveApps || []).map(a => ({ ...a, appType: "PAID" as const })),
-    ...(hubActiveApps || []).map(a => ({ ...a, appType: "FREE" as const })),
+    ...(hubActiveApps || []).map(a => ({ ...a, appType: "HANDSHAKE" as const })),
   ], [dashActiveApps, hubActiveApps]);
 
   const actionItems = useMemo(() => {
