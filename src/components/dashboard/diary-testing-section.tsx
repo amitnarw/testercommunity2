@@ -39,6 +39,7 @@ const pills = [
 const handshakeFeatures: Array<{ lead: string; rest: string; bold: boolean }> =
   [
     { lead: "Test with real users", rest: "(manual handshake)", bold: false },
+    { lead: "14 Testers: 2 more than required", rest: "(manual handshake)", bold: false },
     { lead: "16-day testing period", rest: "", bold: false },
     { lead: "Daily screenshot proof", rest: "(mandatory)", bold: false },
     { lead: "Trusted community & admin review", rest: "", bold: false },
@@ -61,6 +62,7 @@ const proFeatures: Array<{ lead: string; rest: string; bold: boolean }> = [
     bold: false,
   },
   { lead: "Dedicated testing manager", rest: "for every app", bold: true },
+  { lead: "Questionnaire Answers", rest: "for every app", bold: true },
 ];
 
 const listVariants: Variants = {
@@ -367,11 +369,10 @@ function ProEmptyCard() {
 
       {/* Tagline + paragraph */}
       <div className="text-[15px] font-bold text-primary mb-1">
-        More Testers. Better Feedback. Faster Results.
+        Guaranteed Production Approval
       </div>
       <p className="text-sm text-foreground/70 leading-relaxed mb-4">
-        Get professional, managed testing with vetted testers, detailed reports
-        and full support. The smarter way to launch on Google Play.
+        Get Production Access Approval or a full money back refund.
       </p>
 
       {/* Features */}
