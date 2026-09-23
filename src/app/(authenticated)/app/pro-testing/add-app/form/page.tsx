@@ -246,15 +246,18 @@ function AddAppFormContent() {
   };
 
   const isValidPlayStoreLogoUrl = (url: string) => {
+    // Raw whitespace is never valid in a logo URL (e.g. pasted "...02Q 1").
+    if (typeof url !== "string" || url !== url.trim() || /\s/.test(url)) {
+      return false;
+    }
     try {
       const parsed = new URL(url);
-      const allowedHosts = [
-        "play-lh.googleusercontent.com",
-        "lh3.googleusercontent.com",
-      ];
-      return (
-        allowedHosts.includes(parsed.hostname) && parsed.protocol === "https:"
-      );
+      const host = parsed.hostname.toLowerCase();
+      // All *.googleusercontent.com subdomains (lh3–lh6, play-lh) are legit.
+      const isGoogleHost =
+        host === "play-lh.googleusercontent.com" ||
+        host.endsWith(".googleusercontent.com");
+      return isGoogleHost && parsed.protocol === "https:";
     } catch {
       return false;
     }
@@ -271,7 +274,7 @@ function AddAppFormContent() {
   const validateLogoUrl = (url: string) => {
     if (!url.trim()) return "";
     if (!isValidPlayStoreLogoUrl(url)) {
-      return "Must be from play-lh.googleusercontent.com or lh3.googleusercontent.com. Copy URL from Play Console → Store Listing → Graphic Assets.";
+      return "Must be a *.googleusercontent.com URL (https, no spaces). Copy URL from Play Console → Store Listing → Graphic Assets.";
     }
     return "";
   };

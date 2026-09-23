@@ -23,6 +23,27 @@ interface SafeImageProps extends Omit<ImageProps, "src"> {
   loadingClassName?: string;
 }
 
+// Hosts whose images must NOT go through Next's server-side optimizer:
+// Google signed URLs expire / 403 on server fetch, and the server's egress
+// to Google is flaky (ETIMEDOUT). The browser fetches these directly instead.
+function isUnoptimizedHost(hostname: string | null): boolean {
+  if (!hostname) return false;
+  const host = hostname.toLowerCase();
+  // All *.googleusercontent.com subdomains (lh3–lh6, play-lh, …)
+  if (host === "googleusercontent.com" || host.endsWith(".googleusercontent.com")) {
+    return true;
+  }
+  return host === "play.google.com";
+}
+
+function getHostname(src: string): string | null {
+  try {
+    return new URL(src).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 export function SafeImage({
   src,
   alt,
@@ -36,10 +57,20 @@ export function SafeImage({
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Trim stored URLs: some DB rows contain trailing whitespace (e.g. a pasted
+  // "url 1"), which Next encodes to %20 and Google rejects with 400.
+  const cleanSrc = typeof src === "string" ? src.trim() : src;
+
   useEffect(() => {
     setError(false);
     setIsLoading(true);
-  }, [src]);
+  }, [cleanSrc]);
+
+  const skipOptimizer =
+    !!cleanSrc &&
+    !cleanSrc.startsWith("/") &&
+    !cleanSrc.startsWith("data:") &&
+    isUnoptimizedHost(getHostname(cleanSrc));
 
   const isValidSrc = (src: string | null | undefined) => {
     if (!src) return false;
@@ -55,7 +86,7 @@ export function SafeImage({
     }
   };
 
-  if (error || !isValidSrc(src)) {
+  if (error || !isValidSrc(cleanSrc)) {
     return (
       <div
         className={cn(
@@ -81,7 +112,7 @@ export function SafeImage({
         className,
       )}
     >
-      {isLoading && !error && isValidSrc(src) && (
+      {isLoading && !error && isValidSrc(cleanSrc) && (
         <div
           className={cn(
             "bg-muted/20 overflow-hidden relative flex items-center justify-center",
@@ -92,8 +123,9 @@ export function SafeImage({
         </div>
       )}
       <Image
-        src={src!}
+        src={cleanSrc!}
         alt={alt}
+        unoptimized={skipOptimizer || undefined}
         className={cn(
           "transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",

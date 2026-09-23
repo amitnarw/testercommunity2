@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
         {
           name: "Submissions",
           pro: stats.submissionsByAppType.PAID || 0,
-          community: stats.submissionsByAppType.FREE || 0,
+          community: stats.submissionsByAppType.HANDSHAKE || 0,
         },
         {
           name: "Feedback",
@@ -469,7 +469,7 @@ export default function AdminDashboardPage() {
               <div className="bg-secondary/50 rounded-lg p-3 text-center">
                 <p className="text-xs text-muted-foreground">Submissions</p>
                 <p className="text-xl font-bold">
-                  {stats?.submissionsByAppType?.FREE || 0}
+                  {stats?.submissionsByAppType?.HANDSHAKE || 0}
                 </p>
               </div>
               <div className="bg-secondary/50 rounded-lg p-3 text-center">

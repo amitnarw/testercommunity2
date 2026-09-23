@@ -120,6 +120,7 @@ export function Footer() {
                   height={39}
                   alt="Google Play Store"
                   className="h-10 w-auto"
+                  unoptimized
                 />
               </Link>
             </div>
@@ -215,6 +216,7 @@ export function Footer() {
                 height={33}
                 alt="Google Play Store"
                 className="h-9 w-auto"
+                unoptimized
               />
             </Link>
           </div>
