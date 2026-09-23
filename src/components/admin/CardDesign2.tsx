@@ -11,7 +11,7 @@ export function CardDesign2({
   stats: any;
   isLoading?: boolean;
 }) {
-  const freeApps = stats?.submissionsByAppType?.FREE || 0;
+  const freeApps = stats?.submissionsByAppType?.HANDSHAKE || 0;
   const paidApps = stats?.submissionsByAppType?.PAID || 0;
 
   return (

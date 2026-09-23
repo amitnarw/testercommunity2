@@ -24,7 +24,7 @@ export function QuickActions({ stats }: { stats: any }) {
       href: "/admin/submissions-free",
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
-      count: stats?.submissionsByAppType?.FREE || 0,
+      count: stats?.submissionsByAppType?.HANDSHAKE || 0,
       countBadgeColor: "bg-blue-500/20 text-blue-600",
     },
     {

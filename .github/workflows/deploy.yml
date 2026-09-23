@@ -82,7 +82,9 @@ jobs:
             cd /var/www/frontend
             npm install --production
             pm2 delete frontend || true
-            pm2 start npm --name frontend -- start
+            # Prefer IPv4 DNS: the server's IPv6 egress to Google is flaky and
+            # causes ETIMEDOUT on upstream image fetches (lh3/play.google.com).
+            NODE_OPTIONS=--dns-result-order=ipv4first pm2 start npm --name frontend -- start
             pm2 save
 
       # ✅ Telegram Success Notification
