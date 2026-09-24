@@ -6,7 +6,6 @@ import {
   Mail,
   Phone,
   MapPin,
-  Globe,
   Building2,
   Loader2,
   ShieldCheck,
@@ -22,16 +21,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useBillingInfo, useBillingInfoSave } from "@/hooks/useBilling";
 import { toast } from "@/hooks/use-toast";
 import { INDIAN_STATES, getIndianStateFromGstin, getIndianStateCode } from "@/lib/indian-states";
+import { Combobox } from "@/components/ui/combobox";
+import {
+  countries,
+  getCountryByName,
+  getStatesOfCountry,
+  normalizeCountryName,
+  type StateEntry,
+} from "@/lib/countries";
 
 interface BillingInfoModalProps {
   open: boolean;
@@ -60,8 +60,33 @@ export function BillingInfoModal({
     gstin: "",
   });
 
+  // States/provinces for the selected non-India country (lazy-loaded).
+  const [stateOptions, setStateOptions] = useState<StateEntry[]>([]);
+  const [statesLoadedFor, setStatesLoadedFor] = useState<string | null>(null);
+
+  const selectedCountryIso = getCountryByName(formData.country)?.code ?? null;
+
+  useEffect(() => {
+    if (!selectedCountryIso || formData.country === "India") {
+      setStateOptions([]);
+      setStatesLoadedFor(null);
+      return;
+    }
+    let cancelled = false;
+    setStatesLoadedFor(null);
+    getStatesOfCountry(selectedCountryIso).then((opts) => {
+      if (cancelled) return;
+      setStateOptions(opts);
+      setStatesLoadedFor(selectedCountryIso);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [formData.country, selectedCountryIso]);
+
   useEffect(() => {
     if (billingInfo) {
+      const country = normalizeCountryName(billingInfo.country || "India");
       setFormData({
         name: billingInfo.name || "",
         email: billingInfo.email || "",
@@ -69,9 +94,12 @@ export function BillingInfoModal({
         address: billingInfo.address || "",
         city: billingInfo.city || "",
         state: billingInfo.state || "",
-        stateCode: billingInfo.stateCode || getIndianStateCode(billingInfo.state || "") || "",
+        stateCode:
+          country === "India"
+            ? billingInfo.stateCode || getIndianStateCode(billingInfo.state || "") || ""
+            : "",
         zipCode: billingInfo.zipCode || "",
-        country: billingInfo.country || "India",
+        country,
         gstin: billingInfo.gstin || "",
       });
     }
@@ -93,6 +121,8 @@ export function BillingInfoModal({
       const payload = { ...formData };
       if (payload.country === "India") {
         payload.stateCode = payload.stateCode || getIndianStateCode(payload.state) || "";
+      } else {
+        payload.stateCode = "";
       }
       await saveMutation.mutateAsync(payload);
       toast({
@@ -223,7 +253,7 @@ export function BillingInfoModal({
                     {formData.country === "India" ? "State" : "State / Province"} <span className="text-red-500">*</span>
                   </Label>
                   {formData.country === "India" ? (
-                    <Select
+                    <Combobox
                       value={formData.state}
                       onValueChange={(val) => {
                         const entry = INDIAN_STATES.find((s) => s.name === val);
@@ -233,22 +263,43 @@ export function BillingInfoModal({
                           stateCode: entry ? entry.numericCode : "",
                         });
                       }}
-                    >
-                      <SelectTrigger id="state" className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
-                        <SelectValue placeholder="Select" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 max-h-[200px]">
-                        {INDIAN_STATES.map((s) => (
-                          <SelectItem key={s.numericCode} value={s.name}>
-                            {s.name} ({s.alphaCode} / {s.numericCode})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      options={INDIAN_STATES.map((s) => ({
+                        value: s.name,
+                        label: `${s.name} (${s.alphaCode} / ${s.numericCode})`,
+                        keywords: `${s.name} ${s.alphaCode} ${s.numericCode}`,
+                      }))}
+                      placeholder="Select"
+                      searchPlaceholder="Search states..."
+                      emptyText="No state found."
+                      groupHeading="States"
+                      triggerClassName="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50"
+                      contentClassName="rounded-xl border-zinc-200 dark:border-zinc-800"
+                    />
+                  ) : selectedCountryIso &&
+                    statesLoadedFor === selectedCountryIso &&
+                    stateOptions.length > 0 ? (
+                    <Combobox
+                      value={formData.state}
+                      onValueChange={(val) =>
+                        setFormData({ ...formData, state: val, stateCode: "" })
+                      }
+                      options={stateOptions.map((s) => ({ value: s.name, label: s.name }))}
+                      placeholder="Select State / Province"
+                      searchPlaceholder="Search states..."
+                      emptyText="No state found."
+                      groupHeading="States / Provinces"
+                      triggerClassName="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50"
+                      contentClassName="rounded-xl border-zinc-200 dark:border-zinc-800"
+                    />
                   ) : (
                     <Input
                       id="state"
-                      placeholder="State / Province"
+                      placeholder={
+                        statesLoadedFor === null && selectedCountryIso
+                          ? "Loading states..."
+                          : "State / Province"
+                      }
+                      disabled={statesLoadedFor === null && selectedCountryIso !== null}
                       className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.state}
                       onChange={(e) => setFormData({ ...formData, state: e.target.value })}
@@ -273,93 +324,19 @@ export function BillingInfoModal({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="country" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Country <span className="text-red-500">*</span></Label>
-                  <Select
+                  <Combobox
                     value={formData.country}
-                    onValueChange={(val) => setFormData({ ...formData, country: val })}
-                  >
-                    <SelectTrigger id="country" className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
-                      <div className="flex items-center gap-3">
-                        <Globe className="w-4 h-4 text-zinc-400" />
-                        <SelectValue placeholder="Select" />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 max-h-[200px]">
-                      <SelectItem value="India">India</SelectItem>
-                      <SelectItem value="USA">United States</SelectItem>
-                      <SelectItem value="UK">United Kingdom</SelectItem>
-                      <SelectItem value="Canada">Canada</SelectItem>
-                      <SelectItem value="Australia">Australia</SelectItem>
-                      <SelectItem value="Afghanistan">Afghanistan</SelectItem>
-                      <SelectItem value="Algeria">Algeria</SelectItem>
-                      <SelectItem value="Argentina">Argentina</SelectItem>
-                      <SelectItem value="Austria">Austria</SelectItem>
-                      <SelectItem value="Bangladesh">Bangladesh</SelectItem>
-                      <SelectItem value="Belgium">Belgium</SelectItem>
-                      <SelectItem value="Brazil">Brazil</SelectItem>
-                      <SelectItem value="Cambodia">Cambodia</SelectItem>
-                      <SelectItem value="Chile">Chile</SelectItem>
-                      <SelectItem value="China">China</SelectItem>
-                      <SelectItem value="Colombia">Colombia</SelectItem>
-                      <SelectItem value="Czech Republic">Czech Republic</SelectItem>
-                      <SelectItem value="Denmark">Denmark</SelectItem>
-                      <SelectItem value="Egypt">Egypt</SelectItem>
-                      <SelectItem value="Ethiopia">Ethiopia</SelectItem>
-                      <SelectItem value="Finland">Finland</SelectItem>
-                      <SelectItem value="France">France</SelectItem>
-                      <SelectItem value="Germany">Germany</SelectItem>
-                      <SelectItem value="Ghana">Ghana</SelectItem>
-                      <SelectItem value="Greece">Greece</SelectItem>
-                      <SelectItem value="Hong Kong">Hong Kong</SelectItem>
-                      <SelectItem value="Hungary">Hungary</SelectItem>
-                      <SelectItem value="Indonesia">Indonesia</SelectItem>
-                      <SelectItem value="Iran">Iran</SelectItem>
-                      <SelectItem value="Iraq">Iraq</SelectItem>
-                      <SelectItem value="Ireland">Ireland</SelectItem>
-                      <SelectItem value="Israel">Israel</SelectItem>
-                      <SelectItem value="Italy">Italy</SelectItem>
-                      <SelectItem value="Japan">Japan</SelectItem>
-                      <SelectItem value="Jordan">Jordan</SelectItem>
-                      <SelectItem value="Kenya">Kenya</SelectItem>
-                      <SelectItem value="Kuwait">Kuwait</SelectItem>
-                      <SelectItem value="Lebanon">Lebanon</SelectItem>
-                      <SelectItem value="Malaysia">Malaysia</SelectItem>
-                      <SelectItem value="Mexico">Mexico</SelectItem>
-                      <SelectItem value="Morocco">Morocco</SelectItem>
-                      <SelectItem value="Myanmar">Myanmar</SelectItem>
-                      <SelectItem value="Nepal">Nepal</SelectItem>
-                      <SelectItem value="Netherlands">Netherlands</SelectItem>
-                      <SelectItem value="New Zealand">New Zealand</SelectItem>
-                      <SelectItem value="Nigeria">Nigeria</SelectItem>
-                      <SelectItem value="Norway">Norway</SelectItem>
-                      <SelectItem value="Oman">Oman</SelectItem>
-                      <SelectItem value="Pakistan">Pakistan</SelectItem>
-                      <SelectItem value="Peru">Peru</SelectItem>
-                      <SelectItem value="Philippines">Philippines</SelectItem>
-                      <SelectItem value="Poland">Poland</SelectItem>
-                      <SelectItem value="Portugal">Portugal</SelectItem>
-                      <SelectItem value="Qatar">Qatar</SelectItem>
-                      <SelectItem value="Romania">Romania</SelectItem>
-                      <SelectItem value="Russia">Russia</SelectItem>
-                      <SelectItem value="Saudi Arabia">Saudi Arabia</SelectItem>
-                      <SelectItem value="Singapore">Singapore</SelectItem>
-                      <SelectItem value="South Africa">South Africa</SelectItem>
-                      <SelectItem value="South Korea">South Korea</SelectItem>
-                      <SelectItem value="Spain">Spain</SelectItem>
-                      <SelectItem value="Sri Lanka">Sri Lanka</SelectItem>
-                      <SelectItem value="Sweden">Sweden</SelectItem>
-                      <SelectItem value="Switzerland">Switzerland</SelectItem>
-                      <SelectItem value="Taiwan">Taiwan</SelectItem>
-                      <SelectItem value="Thailand">Thailand</SelectItem>
-                      <SelectItem value="Turkey">Turkey</SelectItem>
-                      <SelectItem value="UAE">UAE</SelectItem>
-                      <SelectItem value="Uganda">Uganda</SelectItem>
-                      <SelectItem value="Ukraine">Ukraine</SelectItem>
-                      <SelectItem value="Uruguay">Uruguay</SelectItem>
-                      <SelectItem value="Venezuela">Venezuela</SelectItem>
-                      <SelectItem value="Vietnam">Vietnam</SelectItem>
-                      <SelectItem value="Zimbabwe">Zimbabwe</SelectItem>
-                    </SelectContent>
-                  </Select>
+                    onValueChange={(val) =>
+                      setFormData({ ...formData, country: val, state: "", stateCode: "" })
+                    }
+                    options={countries.map((c) => ({ value: c.name, label: c.name }))}
+                    placeholder="Select country"
+                    searchPlaceholder="Search countries..."
+                    emptyText="No country found."
+                    groupHeading="Countries"
+                    triggerClassName="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50"
+                    contentClassName="rounded-xl border-zinc-200 dark:border-zinc-800"
+                  />
                 </div>
 
                 <div className="space-y-2">
