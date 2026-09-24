@@ -1,44 +1,168 @@
-export const countries = [
-  { name: "India", dial_code: "+91", code: "IN", length: 10 },
-  { name: "United States", dial_code: "+1", code: "US", length: 10 },
-  { name: "United Kingdom", dial_code: "+44", code: "GB", length: 10 },
-  { name: "Canada", dial_code: "+1", code: "CA", length: 10 },
-  { name: "Australia", dial_code: "+61", code: "AU", length: 9 },
-  { name: "Germany", dial_code: "+49", code: "DE", length: 11 },
-  { name: "France", dial_code: "+33", code: "FR", length: 9 },
-  { name: "Japan", dial_code: "+81", code: "JP", length: 10 },
-  { name: "China", dial_code: "+86", code: "CN", length: 11 },
-  { name: "Brazil", dial_code: "+55", code: "BR", length: 11 },
-  { name: "Russia", dial_code: "+7", code: "RU", length: 10 },
-  { name: "Italy", dial_code: "+39", code: "IT", length: 10 },
-  { name: "Spain", dial_code: "+34", code: "ES", length: 9 },
-  { name: "Mexico", dial_code: "+52", code: "MX", length: 10 },
-  { name: "South Korea", dial_code: "+82", code: "KR", length: 10 },
-  { name: "Indonesia", dial_code: "+62", code: "ID", length: 11 },
-  { name: "Turkey", dial_code: "+90", code: "TR", length: 10 },
-  { name: "Saudi Arabia", dial_code: "+966", code: "SA", length: 9 },
-  { name: "United Arab Emirates", dial_code: "+971", code: "AE", length: 9 },
-  { name: "South Africa", dial_code: "+27", code: "ZA", length: 9 },
-  { name: "Argentina", dial_code: "+54", code: "AR", length: 10 },
-  { name: "Netherlands", dial_code: "+31", code: "NL", length: 9 },
-  { name: "Sweden", dial_code: "+46", code: "SE", length: 9 },
-  { name: "Switzerland", dial_code: "+41", code: "CH", length: 9 },
-  { name: "Belgium", dial_code: "+32", code: "BE", length: 9 },
-  { name: "Singapore", dial_code: "+65", code: "SG", length: 8 },
-  { name: "New Zealand", dial_code: "+64", code: "NZ", length: 9 },
-  { name: "Ireland", dial_code: "+353", code: "IE", length: 9 },
-  { name: "Norway", dial_code: "+47", code: "NO", length: 8 },
-  { name: "Denmark", dial_code: "+45", code: "DK", length: 8 },
-  { name: "Finland", dial_code: "+358", code: "FI", length: 9 },
-  { name: "Portugal", dial_code: "+351", code: "PT", length: 9 },
-  { name: "Poland", dial_code: "+48", code: "PL", length: 9 },
-  { name: "Greece", dial_code: "+30", code: "GR", length: 10 },
-  { name: "Pakistan", dial_code: "+92", code: "PK", length: 10 },
-  { name: "Bangladesh", dial_code: "+880", code: "BD", length: 10 },
-  { name: "Vietnam", dial_code: "+84", code: "VN", length: 9 },
-  { name: "Philippines", dial_code: "+63", code: "PH", length: 10 },
-  { name: "Thailand", dial_code: "+66", code: "TH", length: 9 },
-  { name: "Malaysia", dial_code: "+60", code: "MY", length: 9 },
-  { name: "Egypt", dial_code: "+20", code: "EG", length: 10 },
-  { name: "Israel", dial_code: "+972", code: "IL", length: 9 },
-];
+/**
+ * Single source of truth for country / state data across the app.
+ *
+ * Countries come from the `country-state-city` package (250 ISO 3166
+ * countries, Rwanda included). Only the country dataset (~95KB) is bundled
+ * statically; the state dataset is loaded lazily via `getStatesOfCountry()`
+ * (dynamic deep-import of the state module only → separate async chunk).
+ *
+ * Legacy export shape: the old hand-written list exposed
+ * `{ name, dial_code, code, length }`. That shape is preserved so existing
+ * consumers (profile setup, admin user edit) keep working.
+ */
+
+import { Country } from "country-state-city";
+
+export interface CountryEntry {
+  /** Display name, e.g. "Rwanda" */
+  name: string;
+  /** E.164 dial code with leading +, e.g. "+250" */
+  dial_code: string;
+  /** ISO 3166-1 alpha-2 code, e.g. "RW" */
+  code: string;
+  /** Max national phone digits (E.164 fallback: 15) */
+  length: number;
+}
+
+/**
+ * Max national phone-number digits per ISO code, carried over from the
+ * previous hand-written list. Countries not listed here fall back to 15
+ * (the E.164 maximum).
+ */
+const PHONE_LENGTH_BY_ISO: Record<string, number> = {
+  IN: 10,
+  US: 10,
+  GB: 10,
+  CA: 10,
+  AU: 9,
+  DE: 11,
+  FR: 9,
+  JP: 10,
+  CN: 11,
+  BR: 11,
+  RU: 10,
+  IT: 10,
+  ES: 9,
+  MX: 10,
+  KR: 10,
+  ID: 11,
+  TR: 10,
+  SA: 9,
+  AE: 9,
+  ZA: 9,
+  AR: 10,
+  NL: 9,
+  SE: 9,
+  CH: 9,
+  BE: 9,
+  SG: 8,
+  NZ: 9,
+  IE: 9,
+  NO: 8,
+  DK: 8,
+  FI: 9,
+  PT: 9,
+  PL: 9,
+  GR: 10,
+  PK: 10,
+  BD: 10,
+  VN: 9,
+  PH: 10,
+  TH: 9,
+  MY: 9,
+  EG: 10,
+  IL: 9,
+};
+
+/**
+ * Normalize a raw phonecode from the library into a clean `+<digits>` dial
+ * code. The library has compound codes for 26 territories (e.g. "+1-684",
+ * "+1-787 and 1-939") — take the first token and strip inner dashes.
+ */
+function normalizeDialCode(phonecode: string | undefined): string {
+  if (!phonecode) return "";
+  const first = phonecode.trim().split(/\s+/)[0].replace(/-/g, "");
+  return first ? `+${first.replace(/^\+/, "")}` : "";
+}
+
+export const countries: CountryEntry[] = Country.getAllCountries().map((c) => ({
+  name: c.name,
+  dial_code: normalizeDialCode(c.phonecode),
+  code: c.isoCode,
+  length: PHONE_LENGTH_BY_ISO[c.isoCode] ?? 15,
+}));
+
+const byName = new Map<string, CountryEntry>();
+const byIso = new Map<string, CountryEntry>();
+for (const c of countries) {
+  byName.set(c.name.toLowerCase(), c);
+  byIso.set(c.code, c);
+}
+
+export function getCountryByName(name: string): CountryEntry | undefined {
+  if (!name) return undefined;
+  return byName.get(name.trim().toLowerCase());
+}
+
+export function getCountryByIso(isoCode: string): CountryEntry | undefined {
+  if (!isoCode) return undefined;
+  return byIso.get(isoCode.trim().toUpperCase());
+}
+
+export interface StateEntry {
+  name: string;
+  isoCode: string;
+}
+
+/**
+ * States/provinces for an ISO country code, deduped by name (the library
+ * has a few duplicates like Taiwan's Chiayi/Hsinchu city-vs-county pairs).
+ *
+ * Loaded LAZILY via a DEEP import of the state module only. Do NOT import
+ * from the package root ("country-state-city") here — its index re-exports
+ * `City`, which would drag the 8MB city dataset into the bundle.
+ * Resolves to an empty array for countries with no state data (callers
+ * should fall back to a free-text input).
+ */
+type StateModule = typeof import("country-state-city/lib/cjs/state");
+
+let stateModuleCache: StateModule | null = null;
+
+export async function getStatesOfCountry(
+  isoCode: string,
+): Promise<StateEntry[]> {
+  if (!isoCode) return [];
+  if (!stateModuleCache) {
+    stateModuleCache = await import("country-state-city/lib/cjs/state");
+  }
+  const seen = new Set<string>();
+  const out: StateEntry[] = [];
+  for (const s of stateModuleCache.getStatesOfCountry(
+    isoCode.trim().toUpperCase(),
+  )) {
+    if (seen.has(s.name)) continue;
+    seen.add(s.name);
+    out.push({ name: s.name, isoCode: s.isoCode });
+  }
+  return out;
+}
+
+/**
+ * Legacy billing values stored before the full ISO list existed.
+ * Normalized to canonical country names on load so old saved records
+ * (e.g. "USA", "UK", "UAE") still display correctly.
+ */
+const LEGACY_COUNTRY_ALIASES: Record<string, string> = {
+  USA: "United States",
+  UK: "United Kingdom",
+  UAE: "United Arab Emirates",
+  "Hong Kong": "Hong Kong S.A.R.",
+};
+
+export function normalizeCountryName(name: string): string {
+  if (!name) return name;
+  const trimmed = name.trim();
+  const aliased = LEGACY_COUNTRY_ALIASES[trimmed] ?? trimmed;
+  const match = getCountryByName(aliased);
+  return match ? match.name : trimmed;
+}

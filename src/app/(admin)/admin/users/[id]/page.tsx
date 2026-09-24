@@ -148,6 +148,7 @@ import {
   UserCommunicationMethod,
 } from "@/lib/types";
 import { countries } from "@/lib/countries";
+import { Combobox } from "@/components/ui/combobox";
 import { FeedbackModal } from "@/components/feedback-modal";
 
 const AVAILABILITY_CONFIG: Record<
@@ -2727,7 +2728,7 @@ export default function AdminUserDetailsPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Country</Label>
-                  <Select
+                  <Combobox
                     value={editProfileData.country}
                     onValueChange={(val) =>
                       setEditProfileData((prev: any) => ({
@@ -2735,18 +2736,12 @@ export default function AdminUserDetailsPage() {
                         country: val,
                       }))
                     }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select country" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {countries.map((c) => (
-                        <SelectItem key={c.code} value={c.name}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={countries.map((c) => ({ value: c.name, label: c.name }))}
+                    placeholder="Select country"
+                    searchPlaceholder="Search countries..."
+                    emptyText="No country found."
+                    groupHeading="Countries"
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label>Phone</Label>

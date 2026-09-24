@@ -32,7 +32,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRateApp } from "@/hooks/useTester";
 import {
@@ -63,20 +63,36 @@ const DailyProgress = ({
         const day = i + 1;
         const isCompleted = day <= completedDays;
         const isCurrent = !hasTestedToday && day === completedDays + 1;
+        // Already checked in today: the next day tile is locked until tomorrow.
+        const isLockedNext =
+          !isCompleted && hasTestedToday && day === completedDays + 1;
 
         return (
           <div
             key={day}
             onClick={() =>
-              (isCompleted || isCurrent) && !isCheckingIn && onDayClick(day)
+              (isCompleted || isCurrent || isLockedNext) &&
+              !isCheckingIn &&
+              onDayClick(day)
+            }
+            title={
+              isLockedNext
+                ? "Checked in today — this day opens tomorrow"
+                : undefined
             }
             className={cn(
-              "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105 cursor-pointer",
+              "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
+              isCompleted || isCurrent || isLockedNext
+                ? "cursor-pointer"
+                : "cursor-default",
               isCurrent
                 ? "bg-gradient-to-br from-emerald-500 to-emerald-700 text-white scale-110"
                 : "bg-gradient-to-br from-gray-400/20 to-gray-400/2",
               isCompleted
                 ? "bg-gradient-to-br from-green-400/50 to-green-400/20 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground"
+                : "",
+              isLockedNext
+                ? "bg-gradient-to-br from-amber-400/25 to-amber-400/5 opacity-80"
                 : "",
             )}
           >
@@ -89,10 +105,14 @@ const DailyProgress = ({
                 <p
                   className={cn(
                     "text-[10px] sm:text-xs",
-                    isCurrent ? "opacity-80" : "text-muted-foreground",
+                    isCurrent
+                      ? "opacity-80"
+                      : isLockedNext
+                        ? "text-amber-600 dark:text-amber-400"
+                        : "text-muted-foreground",
                   )}
                 >
-                  Day
+                  {isLockedNext ? "Tomorrow" : "Day"}
                 </p>
                 <p
                   className={cn(
@@ -128,6 +148,9 @@ export default function OngoingProjectView({
     useState<VerificationData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  // Synchronous re-entrancy guard: isCheckingIn (react-query) flips too
+  // late to stop a double/triple click in the same frame.
+  const isSubmittingRef = useRef(false);
   const { toast } = useToast();
 
   const { data: session } = authClient.useSession();
@@ -160,6 +183,7 @@ export default function OngoingProjectView({
   const { mutate: submitCheckIn, isPending: isCheckingIn } =
     useSubmitDailyVerification({
       onSuccess: () => {
+        isSubmittingRef.current = false;
         toast({
           title: "Check-in Successful",
           description: "Your daily check-in has been recorded.",
@@ -167,6 +191,7 @@ export default function OngoingProjectView({
         refetch();
       },
       onError: (err: any) => {
+        isSubmittingRef.current = false;
         toast({
           title: "Check-in Failed",
           description: err.message || "Failed to submit check-in.",
@@ -257,10 +282,17 @@ export default function OngoingProjectView({
       !hasTestedToday &&
       !isTestingNotStarted &&
       !isAdminCompleted &&
-      !isCheckingIn
+      !isCheckingIn &&
+      !isSubmittingRef.current
     ) {
       // Show confirmation modal instead of immediate check-in
       setIsConfirmModalOpen(true);
+    } else if (hasTestedToday && day === userDaysCompleted + 1) {
+      // Locked next-day tile: give feedback instead of a silent no-op.
+      toast({
+        title: "Checked in for today",
+        description: `Day ${day} opens tomorrow. Come back then to keep your streak.`,
+      });
     }
   };
 
@@ -563,13 +595,26 @@ export default function OngoingProjectView({
             <div className="w-full grid gap-3 mt-10">
               <Button
                 size="lg"
+                disabled={isCheckingIn}
                 onClick={() => {
+                  // Re-entrancy guard: a double/triple click before React
+                  // re-renders would otherwise fire submitCheckIn multiple
+                  // times, each advancing a day server-side.
+                  if (isSubmittingRef.current || isCheckingIn) return;
+                  isSubmittingRef.current = true;
                   submitCheckIn({ hubId, proofImage: "" });
                   setIsConfirmModalOpen(false);
                 }}
                 className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
-                Yes, Check In
+                {isCheckingIn ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                    Checking in…
+                  </>
+                ) : (
+                  "Yes, Check In"
+                )}
               </Button>
               <Button
                 variant="ghost"

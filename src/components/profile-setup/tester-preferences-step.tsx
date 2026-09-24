@@ -3,15 +3,9 @@
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ProfileStepperProps, StepWrapper } from "./common";
 import { countries } from "@/lib/countries";
+import { Combobox } from "@/components/ui/combobox";
 
 export const TesterPreferencesStep = ({
   profileData,
@@ -22,7 +16,7 @@ export const TesterPreferencesStep = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label>Country</Label>
-          <Select
+          <Combobox
             value={profileData?.country || ""}
             onValueChange={(value) => {
               const country = countries.find((c) => c.name === value);
@@ -32,18 +26,16 @@ export const TesterPreferencesStep = ({
                 phone: country ? country.dial_code : prev.phone,
               }));
             }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select Country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.code} value={country.name}>
-                  {country.name} ({country.dial_code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            options={countries.map((country) => ({
+              value: country.name,
+              label: `${country.name} (${country.dial_code})`,
+              keywords: `${country.name} ${country.dial_code}`,
+            }))}
+            placeholder="Select Country"
+            searchPlaceholder="Search countries..."
+            emptyText="No country found."
+            groupHeading="Countries"
+          />
         </div>
         <div className="flex flex-col gap-2">
           <Label>Phone Number</Label>
